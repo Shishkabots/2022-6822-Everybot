@@ -21,8 +21,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
 
 public class Robot extends TimedRobot {
+
+  private RobotContainer m_robotContainer;
+
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
   CANSparkMax driveLeftA = new CANSparkMax(1, MotorType.kBrushed);
@@ -57,6 +61,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    
+    m_robotContainer = new RobotContainer();
     //Configure motors to turn correct direction. You may have to invert some of your motors
     driveLeftA.setInverted(true);
     driveLeftA.burnFlash();
