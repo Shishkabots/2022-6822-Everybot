@@ -5,7 +5,7 @@ import frc.robot.auto.VisionConstants.camMode;
 import frc.robot.auto.VisionConstants.ledMode;
 
 public class CameraSubsystem {
-    public LimelightCamera m_limelightCamera;
+    private LimelightCamera m_limelightCamera;
 
     public CameraSubsystem() {
         m_limelightCamera = new LimelightCamera();
@@ -17,5 +17,12 @@ public class CameraSubsystem {
 
     public void setLedToOff() {
         m_limelightCamera.setLedMode(ledMode.FORCE_OFF);
+    }
+
+    /**
+     * Accessor methods
+     */
+    public LimelightCamera getLimelightCamera() {
+        return m_limelightCamera;
     }
 } 

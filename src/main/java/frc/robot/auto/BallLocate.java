@@ -3,18 +3,17 @@ package frc.robot.auto;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.auto.VisionConstants;
-import frc.robot.auto.LimelightCamera;
 import java.lang.Math;
+import frc.robot.subsystems.CameraSubsystem;
 
 
 public class BallLocate extends CommandBase {
 
     private LimelightCamera m_limelight;
-    private double distanceToBall, targetSpeed;
+    private double distanceToBall;
 
-    private BallLocate() {
-        m_limelight = new LimelightCamera();
+    public BallLocate(CameraSubsystem cam_1) {
+        m_limelight = cam_1.getLimelightCamera();
     }
 
     // Update smart dashboard with current offset values
@@ -34,6 +33,7 @@ public class BallLocate extends CommandBase {
      * Constants.ROBOT_HEIGHT_IN_CM = h1
      */
     public double calculateDistance(double angleAboveCameraInDegrees) {
+        // Change constant names, need to reconfigure algorithm.
         distanceToBall = (Constants.HUB_HEIGHT_IN_CM - Constants.ROBOT_HEIGHT_IN_CM)/(Math.tan(Constants.TURRET_ANGLE_IN_DEGREES + angleAboveCameraInDegrees));
         return distanceToBall;
     }
