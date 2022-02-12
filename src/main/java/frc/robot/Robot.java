@@ -21,7 +21,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.auto.LimelightCamera;
+import frc.robot.logging.RobotLogger;
+
+
 
 public class Robot extends TimedRobot {
 
@@ -45,6 +49,9 @@ public class Robot extends TimedRobot {
 
   final double armTimeUp = 0.5;
   final double armTimeDown = 0.35;
+  private final RobotLogger logger = RobotContainer.getLogger();
+  private CameraSubsystem cam1;
+
 
   //Varibles needed for the code
   boolean armUp = true; //Arm initialized to up because that's how it would start a match
@@ -61,6 +68,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    // Log that robot has been initialized
+    logger.logInfo("Robot initialized."); 
     
     m_robotContainer = new RobotContainer();
     //Configure motors to turn correct direction. You may have to invert some of your motors
@@ -80,6 +90,12 @@ public class Robot extends TimedRobot {
     //add a thing on the dashboard to turn off auto if needed
     SmartDashboard.putBoolean("Go For Auto", false);
     goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
+
+    
+    // Sets Limelight to driver camera, turn off green LEDs.
+    cam1 = new CameraSubsystem();
+    cam1.setCamToDriverMode();
+    cam1.setLedToOff();
   }
 
   @Override
@@ -206,5 +222,4 @@ public class Robot extends TimedRobot {
     arm.set(0);
     intake.set(ControlMode.PercentOutput, 0);
   }
-    
 }
