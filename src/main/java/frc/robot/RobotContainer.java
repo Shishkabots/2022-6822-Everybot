@@ -43,7 +43,6 @@ public class RobotContainer {
   private final Joystick m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
   private DriveType m_driveType = DriveType.ARCADE_DRIVE;
   private static RobotLogger logger;
-  private static CameraSubsystem cam_1 = new CameraSubsystem();
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
   private final BooleanSupplier m_isQuickTurn = () -> false; 
@@ -131,9 +130,5 @@ public class RobotContainer {
       initLogger(logger);
     }
     return logger;
-  }
-  
-  public CameraSubsystem getCam() {
-    return cam_1;
   }
 } 
