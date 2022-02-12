@@ -12,8 +12,8 @@ public class BallLocate extends CommandBase {
     private LimelightCamera m_limelight;
     private double distanceToBall;
 
-    public BallLocate(CameraSubsystem cam_1) {
-        m_limelight = cam_1.getLimelightCamera();
+    public BallLocate(CameraSubsystem cam1) {
+        m_limelight = cam1.getLimelightCamera();
     }
 
     // Update smart dashboard with current offset values
