@@ -132,4 +132,8 @@ public class RobotContainer {
     }
     return logger;
   }
-}
+  
+  public CameraSubsystem getCam() {
+    return cam_1;
+  }
+} 
