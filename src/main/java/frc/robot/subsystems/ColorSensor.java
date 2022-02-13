@@ -12,7 +12,8 @@ import frc.robot.Constants;
 
 /**
  * ColorSensor Subsystem
- * Some code implemented from REV's Example Code (https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java)
+ * Some code implemented from REV's Example Code
+ * @link{https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java}
  */
 public class ColorSensor extends SubsystemBase {
     private ColorSensorV3 m_colorSensor;
@@ -45,7 +46,6 @@ public class ColorSensor extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //m_logger.logInfo("Red = " + m_colorSensor.getRed() + "\nGreen = " + m_colorSensor.getGreen() + "\nBlue = " + m_colorSensor.getBlue() + ".");
         ColorMatchResult match = m_colorMatcher.matchClosestColor(m_colorSensor.getColor());
  
         m_logger.logInfo(checkColor(match));
