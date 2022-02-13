@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.lang.Math;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -65,7 +68,7 @@ public final class Constants {
      * Utilities, such as encoder, and various conversions.
      * WHEEL_CIRCUMFERENCE_METERS calculation to be moved to another class.
      * ENCODER_UNITS_PER_REVOLUTION is just a placeholder.
-     * GEARBOX_RATIO_OVER_ONE is a placeholder as well, to be finalized.
+     * GEARBOX_RATIO_OVER_ONE is a plcaeholder as well, to be finalized.
      * Sensor velocity is returned over 100ms, so SENSOR_TIME_IN_SECONDS shows it in seconds.
      */
 
@@ -88,5 +91,9 @@ public final class Constants {
      * ColorSensorV3 Constants
      */
 
-     public final static double COLOR_SENSOR_PORT = 3;
+    public final static double COLOR_SENSOR_PORT = 3;
+    public final static Color kBlueTarget = new Color(0.143, 0.427, 0.429);
+    public final static Color kGreenTarget = new Color(0.197, 0.561, 0.240);
+    public final static Color kRedTarget = new Color(0.561, 0.232, 0.114);
+    public final static Color kYellowTarget = new Color(0.361, 0.524, 0.113);
 }

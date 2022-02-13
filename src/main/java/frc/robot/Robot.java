@@ -27,7 +27,6 @@ import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
 
 
-
 public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
