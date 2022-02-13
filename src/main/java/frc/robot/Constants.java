@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.lang.Math;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -83,4 +86,14 @@ public final class Constants {
 
     public final static String SMARTDASHBOARD_KEY_TARGET_FLYWHEEL_SPEED = "Target flywheel speed";
     public final static double FLYWHEEL_DEFAULT_SPEED = 0.0;
+
+    /**
+     * ColorSensorV3 Constants
+     */
+
+    public final static double COLOR_SENSOR_PORT = 3;
+    public final static Color kBlueTarget = new Color(0.143, 0.427, 0.429);
+    public final static Color kGreenTarget = new Color(0.197, 0.561, 0.240);
+    public final static Color kRedTarget = new Color(0.561, 0.232, 0.114);
+    public final static Color kYellowTarget = new Color(0.361, 0.524, 0.113);
 }

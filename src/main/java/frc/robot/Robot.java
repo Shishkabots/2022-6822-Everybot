@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.auto.LimelightCamera;
 import frc.robot.logging.RobotLogger;
-
+import frc.robot.subsystems.ColorSensor;
 
 
 public class Robot extends TimedRobot {
@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
   final double armTimeDown = 0.35;
   private final RobotLogger logger = RobotContainer.getLogger();
   private CameraSubsystem cam1;
+  private ColorSensor colorSensor;
 
 
   //Varibles needed for the code
@@ -96,6 +97,8 @@ public class Robot extends TimedRobot {
     cam1 = new CameraSubsystem();
     cam1.setCamToDriverMode();
     cam1.setLedToOff();
+
+    colorSensor = new ColorSensor();
   }
 
   @Override
