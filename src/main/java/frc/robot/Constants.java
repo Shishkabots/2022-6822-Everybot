@@ -83,4 +83,10 @@ public final class Constants {
 
     public final static String SMARTDASHBOARD_KEY_TARGET_FLYWHEEL_SPEED = "Target flywheel speed";
     public final static double FLYWHEEL_DEFAULT_SPEED = 0.0;
+
+    /**
+     * ColorSensorV3 Constants
+     */
+
+     public final static double COLOR_SENSOR_PORT = 3;
 }
