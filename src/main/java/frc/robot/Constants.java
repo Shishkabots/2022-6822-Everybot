@@ -68,7 +68,7 @@ public final class Constants {
      * Utilities, such as encoder, and various conversions.
      * WHEEL_CIRCUMFERENCE_METERS calculation to be moved to another class.
      * ENCODER_UNITS_PER_REVOLUTION is just a placeholder.
-     * GEARBOX_RATIO_OVER_ONE is a plcaeholder as well, to be finalized.
+     * GEARBOX_RATIO_OVER_ONE is a placeholder as well, to be finalized.
      * Sensor velocity is returned over 100ms, so SENSOR_TIME_IN_SECONDS shows it in seconds.
      */
 

@@ -30,7 +30,6 @@ public class ColorSensor extends SubsystemBase {
         m_colorMatcher.addColorMatch(Constants.kGreenTarget);
         m_colorMatcher.addColorMatch(Constants.kRedTarget);
         m_colorMatcher.addColorMatch(Constants.kYellowTarget);
-
     }
 
     /**
@@ -51,15 +50,16 @@ public class ColorSensor extends SubsystemBase {
         m_logger.logInfo(checkColor(match));
     }
 
+    // If this doesn't work, change .equals to ==.
     public String checkColor(ColorMatchResult match) {
-        String colorString = "";
-        if (match.color == Constants.kBlueTarget) {
+        String colorString;
+        if (match.color.equals(Constants.kBlueTarget)) {
             colorString = "Blue";
-          } else if (match.color == Constants.kRedTarget) {
+          } else if (match.color.equals(Constants.kRedTarget)) {
             colorString = "Red";
-          } else if (match.color == Constants.kGreenTarget) {
+          } else if (match.color.equals(Constants.kGreenTarget)) {
             colorString = "Green";
-          } else if (match.color == Constants.kYellowTarget) {
+          } else if (match.color.equals(Constants.kYellowTarget)) {
             colorString = "Yellow";
           } else {
             colorString = "Unknown";
