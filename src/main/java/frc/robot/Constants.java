@@ -96,4 +96,22 @@ public final class Constants {
     public final static Color kGreenTarget = new Color(0.197, 0.561, 0.240);
     public final static Color kRedTarget = new Color(0.561, 0.232, 0.114);
     public final static Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+
+    /**
+     * Arm constants, directly pulled from EveryBot code.
+     * Arm initialized to up because that's how it would start a match
+     */
+    public final static double armHoldUp = 0.08;
+    public final static double armHoldDown = 0.13;
+    public final static double armTravel = 0.5;
+    public final static double armTimeUp = 0.5;
+    public final static double armTimeDown = 0.35;
+    public static boolean armUp = true; 
+    public final static boolean burstMode = false;
+    public static double lastBurstTime = 0;
+    
+    // General everybot constants.
+    public static double autoStart = 0;
+    public static boolean goForAuto = false;
+
 }

@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,11 +13,11 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class DriveTrain extends SubsystemBase {
 
-  private final CANSparkMax m_leftFrontMotor;
-  private final CANSparkMax m_leftBackMotor;
+  private final Motor m_leftFrontMotor;
+  private final Motor m_leftBackMotor;
 
-  private final CANSparkMax m_rightFrontMotor;
-  private final CANSparkMax m_rightBackMotor;
+  private final Motor m_rightFrontMotor;
+  private final Motor m_rightBackMotor;
 
   private MotorControllerGroup m_leftSide;
   private final MotorControllerGroup m_rightSide;
@@ -47,10 +45,10 @@ public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
   public DriveTrain() {
     
-    m_leftFrontMotor = new CANSparkMax(Constants.DRIVETRAIN_LEFT_FRONT_MOTOR, MotorType.kBrushed);
-    m_leftBackMotor = new CANSparkMax(Constants.DRIVETRAIN_LEFT_BACK_MOTOR, MotorType.kBrushed);
-    m_rightFrontMotor = new CANSparkMax(Constants.DRIVETRAIN_RIGHT_FRONT_MOTOR, MotorType.kBrushed);
-    m_rightBackMotor = new CANSparkMax(Constants.DRIVETRAIN_RIGHT_BACK_MOTOR, MotorType.kBrushed);
+    m_leftFrontMotor = new Motor(Constants.DRIVETRAIN_LEFT_FRONT_MOTOR, MotorType.kBrushed);
+    m_leftBackMotor = new Motor(Constants.DRIVETRAIN_LEFT_BACK_MOTOR, MotorType.kBrushed);
+    m_rightFrontMotor = new Motor(Constants.DRIVETRAIN_RIGHT_FRONT_MOTOR, MotorType.kBrushed);
+    m_rightBackMotor = new Motor(Constants.DRIVETRAIN_RIGHT_BACK_MOTOR, MotorType.kBrushed);
 
     /**
      * Inverts all motors based on value of the constant, which is currently true.
@@ -62,8 +60,8 @@ public class DriveTrain extends SubsystemBase {
     m_rightBackMotor.setInverted(Constants.IS_INVERTED);
 
     
-    m_leftSide = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
-    m_rightSide = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
+    m_leftSide = new MotorControllerGroup(m_leftFrontMotor.getSparkMAXMotor(), m_leftBackMotor.getSparkMAXMotor());
+    m_rightSide = new MotorControllerGroup(m_rightFrontMotor.getSparkMAXMotor(), m_rightBackMotor.getSparkMAXMotor());
 
     m_robotDrive = new DifferentialDrive(m_leftSide, m_rightSide); 
   }
@@ -78,4 +76,44 @@ public class DriveTrain extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
+  /**
+   * Initializes motor to -0.3 speed, as given in EveryBot code.
+   */
+  public void autonomousInit() {
+    m_leftFrontMotor.setSpeed(-0.3);
+    m_leftBackMotor.setSpeed(-0.3);
+    m_rightFrontMotor.setSpeed(-0.3);
+    m_rightBackMotor.setSpeed(-0.3);
+  }
+
+  public void autonomousEnd() {
+    m_leftFrontMotor.setSpeed(0);
+    m_leftBackMotor.setSpeed(0);
+    m_rightFrontMotor.setSpeed(0);
+    m_rightBackMotor.setSpeed(0);
+  }
+
+  /**
+   * Program the motor speeds during teleop mode periodically. Modified from EveryBot code.
+   * Turn and forward are the X and Y axis values respectively from the joystick.
+   * @param forward
+   * @param turn
+   */
+  public void teleopPeriodic(double forward, double turn) {
+
+    double driveLeftPower = forward - turn;
+    double driveRightPower = forward + turn;
+
+    m_leftFrontMotor.setSpeed(driveLeftPower);
+    m_leftBackMotor.setSpeed(driveLeftPower);
+    m_rightFrontMotor.setSpeed(driveRightPower);
+    m_rightBackMotor.setSpeed(driveRightPower);
+  }
+
+  public void disabledInit() {
+    m_leftFrontMotor.setSpeed(0);
+    m_leftBackMotor.setSpeed(0);
+    m_rightFrontMotor.setSpeed(0);
+    m_rightBackMotor.setSpeed(0);
+  }
 }
