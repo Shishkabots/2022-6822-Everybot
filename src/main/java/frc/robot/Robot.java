@@ -25,9 +25,11 @@ import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.auto.LimelightCamera;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.Intake;
 
 
 public class Robot extends TimedRobot {
+  public static Intake m_intake = new Intake();
 
   private RobotContainer m_robotContainer;
 
