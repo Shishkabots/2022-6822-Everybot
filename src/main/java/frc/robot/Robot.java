@@ -43,6 +43,9 @@ public class Robot extends TimedRobot {
   private CameraSubsystem cam1;
   private ColorSensor colorSensor;
 
+  public static double autoStart = 0;
+  public static boolean goForAuto = false;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +63,7 @@ public class Robot extends TimedRobot {
     
     //add a thing on the dashboard to turn off auto if needed
     SmartDashboard.putBoolean("Go For Auto", false);
-    Constants.goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
+    goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
 
     
     // Sets Limelight to driver camera, turn off green LEDs.
@@ -74,20 +77,20 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //get a time for auton start to do events based on time later
-    Constants.autoStart = Timer.getFPGATimestamp();
+    autoStart = Timer.getFPGATimestamp();
     //check dashboard icon to ensure good to do auto
-    Constants.goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
+    goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
 
-    m_arm.bothPeriodic();
+    m_arm.commonPeriodic();
     
     //get time since start of auto
-    double autoTimeElapsed = Timer.getFPGATimestamp() - Constants.autoStart;
-    if(Constants.goForAuto){
+    double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
+    if(goForAuto){
       //series of timed events making up the flow of auto
       if(autoTimeElapsed < 3){
         //spit out the ball for three seconds
@@ -128,15 +131,15 @@ public class Robot extends TimedRobot {
       intake.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
-    m_arm.bothPeriodic();
+    m_arm.commonPeriodic();
   
-    if(driverController.getRawButtonPressed(6) && !Constants.armUp){
-      Constants.lastBurstTime = Timer.getFPGATimestamp();
-      Constants.armUp = true;
+    if(driverController.getRawButtonPressed(6) && !m_arm.getArmUpStatus()){
+      m_arm.setLastBurstTime(Timer.getFPGATimestamp());
+      m_arm.setArmUpStatus(true);
     }
-    else if(driverController.getRawButtonPressed(8) && Constants.armUp){
-      Constants.lastBurstTime = Timer.getFPGATimestamp();
-      Constants.armUp = false;
+    else if(driverController.getRawButtonPressed(8) && m_arm.getArmUpStatus()){
+      m_arm.setLastBurstTime(Timer.getFPGATimestamp());
+      m_arm.setArmUpStatus(false);
     }  
 
   }

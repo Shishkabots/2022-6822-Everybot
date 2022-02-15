@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Arm extends SubsystemBase {
 
   private final Motor m_armMotor;
+  private boolean m_armUp; 
+  private double m_lastBurstTime;
+
 
   /** Creates a new Arm. */
   public Arm() {
@@ -20,6 +23,9 @@ public class Arm extends SubsystemBase {
     m_armMotor.setInverted(false);
     m_armMotor.setIdleMode(true);
     m_armMotor.burnFlash();
+
+    m_armUp = true;
+    m_lastBurstTime = 0;
   }
 
 
@@ -37,21 +43,21 @@ public class Arm extends SubsystemBase {
    * Runs when Robot.java's autonomousPeriodic and teleopPeriodic runs.
    * Sets arm up or down based on timestamp.
    */
-  public void bothPeriodic() {
-    if(Constants.armUp){
-        if(Timer.getFPGATimestamp() - Constants.lastBurstTime < Constants.armTimeUp){
-          m_armMotor.setSpeed(Constants.armTravel);
+  public void commonPeriodic() {
+    if(m_armUp){
+        if(Timer.getFPGATimestamp() - m_lastBurstTime < Constants.ARM_TIME_UP){
+          m_armMotor.setSpeed(Constants.ARM_TRAVEL);
         }
         else{
-            m_armMotor.setSpeed(Constants.armHoldUp);
+            m_armMotor.setSpeed(Constants.ARM_HOLD_UP);
         }
       }
       else{
-        if(Timer.getFPGATimestamp() - Constants.lastBurstTime < Constants.armTimeDown){
-            m_armMotor.setSpeed(-1 * Constants.armTravel);
+        if(Timer.getFPGATimestamp() - m_lastBurstTime < Constants.ARM_TIME_DOWN){
+            m_armMotor.setSpeed(-1 * Constants.ARM_TRAVEL);
         }
         else{
-            m_armMotor.setSpeed(-1 * Constants.armHoldUp);
+            m_armMotor.setSpeed(-1 * Constants.ARM_HOLD_UP);
         }
       }
   }
@@ -61,5 +67,25 @@ public class Arm extends SubsystemBase {
    */
   public void disabledInit() {
     m_armMotor.setSpeed(0);
+  }
+
+  // Returns private boolean m_armUp
+  public boolean getArmUpStatus() {
+    return m_armUp;
+  }
+
+  // Returns private double m_lastBurstTime
+  public double getLastBurstTime() {
+    return m_lastBurstTime;
+  }
+
+  // Sets private boolean m_armUp 
+  public void setArmUpStatus(boolean armUp) {
+    m_armUp = armUp;
+  }
+
+  // Sets private double m_lastBurstTime
+  public void setLastBurstTime(double lastBurstTime) {
+    m_lastBurstTime = lastBurstTime;
   }
 }
