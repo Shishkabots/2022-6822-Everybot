@@ -26,10 +26,10 @@ public class ColorSensor extends SubsystemBase {
         m_colorMatcher = new ColorMatch(); 
 
         m_logger = RobotContainer.getLogger();
-        m_colorMatcher.addColorMatch(Constants.kBlueTarget);
-        m_colorMatcher.addColorMatch(Constants.kGreenTarget);
-        m_colorMatcher.addColorMatch(Constants.kRedTarget);
-        m_colorMatcher.addColorMatch(Constants.kYellowTarget);
+        m_colorMatcher.addColorMatch(Constants.k_BLUE_TARGET);
+        m_colorMatcher.addColorMatch(Constants.k_GREEN_TARGET);
+        m_colorMatcher.addColorMatch(Constants.k_RED_TARGET);
+        m_colorMatcher.addColorMatch(Constants.k_YELLOW_TARGET);
     }
 
     /**
@@ -53,13 +53,13 @@ public class ColorSensor extends SubsystemBase {
     // If this doesn't work, change .equals to ==.
     public String checkColor(ColorMatchResult match) {
         String colorString;
-        if (match.color.equals(Constants.kBlueTarget)) {
+        if (match.color.equals(Constants.k_BLUE_TARGET)) {
             colorString = "Blue";
-          } else if (match.color.equals(Constants.kRedTarget)) {
+          } else if (match.color.equals(Constants.k_RED_TARGET)) {
             colorString = "Red";
-          } else if (match.color.equals(Constants.kGreenTarget)) {
+          } else if (match.color.equals(Constants.k_GREEN_TARGET)) {
             colorString = "Green";
-          } else if (match.color.equals(Constants.kYellowTarget)) {
+          } else if (match.color.equals(Constants.k_YELLOW_TARGET)) {
             colorString = "Yellow";
           } else {
             colorString = "Unknown";
