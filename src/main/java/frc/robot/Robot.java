@@ -43,8 +43,8 @@ public class Robot extends TimedRobot {
   private CameraSubsystem cam1;
   private ColorSensor colorSensor;
 
-  public static double autoStart = 0;
-  public static boolean goForAuto = false;
+  private double autoStart = 0;
+  private boolean goForAuto = false;
 
 
   /**
