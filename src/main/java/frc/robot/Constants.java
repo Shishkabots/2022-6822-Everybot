@@ -92,8 +92,20 @@ public final class Constants {
      */
 
     public final static double COLOR_SENSOR_PORT = 3;
-    public final static Color kBlueTarget = new Color(0.143, 0.427, 0.429);
-    public final static Color kGreenTarget = new Color(0.197, 0.561, 0.240);
-    public final static Color kRedTarget = new Color(0.561, 0.232, 0.114);
-    public final static Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+    public final static Color k_BLUE_TARGET = new Color(0.143, 0.427, 0.429);
+    public final static Color k_GREEN_TARGET = new Color(0.197, 0.561, 0.240);
+    public final static Color k_RED_TARGET = new Color(0.561, 0.232, 0.114);
+    public final static Color k_YELLOW_TARGET = new Color(0.361, 0.524, 0.113);
+
+    /**
+     * Arm constants, directly pulled from EveryBot code.
+     * Arm initialized to up because that's how it would start a match
+     */
+    public final static double ARM_HOLD_UP = 0.08;
+    public final static double ARM_HOLD_DOWN = 0.13;
+    public final static double ARM_TRAVEL = 0.5;
+    public final static double ARM_TIME_UP = 0.5;
+    public final static double ARM_TIME_DOWN = 0.35;
+    public final static boolean BURST_MODE = false;
+
 }
