@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
-package frc.robot.subsystems;
+
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -21,20 +21,15 @@ public class pigeonIMU extends SubsystemBase {
     Yaw is robot direction
     */
 
-    public void PIgeonIMU(double startingX, double startingY, double startingDirection) {
+    public pigeonIMU(double startingX, double startingY, double startingDirection) {
         initialX = startingX;
         initialY = startingY;
         initialDirection = startingDirection;
     }
-    public enum PigeonState {
-        NoComm,
-        Initializing,
-        Ready,
-        UserCalibration,
-    }
     public void initialize() {
         int counter = 0;
-        while(pigeon.getState() != PigeonState.Ready && counter < 100) {
+        //boot time is around 5 seconds, so may not be ready
+        while(pigeon.getState() != PigeonIMU.PigeonState.Ready && counter < 1000) {
             System.out.println("PigeonIMU isn't ready");
             counter++;
         }
@@ -43,10 +38,12 @@ public class pigeonIMU extends SubsystemBase {
     public double getDirection() {
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
-        System.out.println("Pigeon Direction is: " + ypr[0]);
+        // System.out.println("Pigeon Direction is: " + ypr[0]);
+        return ypr[0];
     }
-    public double getX() {
-
+    public double getTemperature() {
+        // will require calibraton
+        return pigeon.getTemp();
     }
 
     

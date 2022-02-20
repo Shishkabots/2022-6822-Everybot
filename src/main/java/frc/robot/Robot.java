@@ -21,18 +21,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
-<<<<<<< HEAD
 import frc.robot.subsystems.Intake;
-=======
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.pigeonIMU;
 import frc.robot.Constants;
->>>>>>> origin/main
 
 
 public class Robot extends TimedRobot {
   public static Intake m_intake = new Intake();
-
+  public static pigeonIMU m_pigeonIMU = new pigeonIMU(0, 0, 0);
+  
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;
   private Arm m_arm;
