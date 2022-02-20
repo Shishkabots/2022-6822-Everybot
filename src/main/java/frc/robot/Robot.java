@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 
-
 public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
@@ -51,7 +50,6 @@ public class Robot extends TimedRobot {
 
   private String m_driveMode;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -102,9 +100,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    //get a time for auton start to do events based on time later
+    // get a time for auton start to do events based on time later
     autoStart = Timer.getFPGATimestamp();
-    //check dashboard icon to ensure good to do auto
+    // check dashboard icon to ensure good to do auto
     goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
   }
 
@@ -112,9 +110,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    //m_arm.commonPeriodic();
+    // m_arm.commonPeriodic();
     
-    //get time since start of auto
+    // Get time since start of autonomous
     double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
     if(goForAuto){
       //series of timed events making up the flow of auto
