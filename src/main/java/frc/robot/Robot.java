@@ -24,13 +24,15 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 
 public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;
-  private Arm m_arm;
+  //private Arm m_arm;
 
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
@@ -46,6 +48,8 @@ public class Robot extends TimedRobot {
   private double autoStart = 0;
   private boolean goForAuto = false;
 
+  private String m_driveMode;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -58,8 +62,7 @@ public class Robot extends TimedRobot {
     logger.logInfo("Robot initialized."); 
     
     m_robotContainer = new RobotContainer();
-    m_driveTrain = new DriveTrain();
-    m_arm = new Arm();
+    //m_arm = new Arm();
     
     //add a thing on the dashboard to turn off auto if needed
     SmartDashboard.putBoolean("Go For Auto", false);
@@ -72,13 +75,34 @@ public class Robot extends TimedRobot {
     cam1.setLedToOff();
 
     colorSensor = new ColorSensor();
+
+    m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
+    m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
+    m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
+    SmartDashboard.putData("Drive Modes: ", m_chooser);
+  }
+
+    /**
+   * This function is called every robot packet, no matter the mode. Use this for items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
   }
 
   @Override
   public void autonomousInit() {
-    //get a time for auton start to do events based on time later
+    // get a time for auton start to do events based on time later
     autoStart = Timer.getFPGATimestamp();
-    //check dashboard icon to ensure good to do auto
+    // check dashboard icon to ensure good to do auto
     goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
   }
 
@@ -86,9 +110,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    m_arm.commonPeriodic();
+    // m_arm.commonPeriodic();
     
-    //get time since start of auto
+    // Get time since start of autonomous
     double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
     if(goForAuto){
       //series of timed events making up the flow of auto
@@ -114,11 +138,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    //Set up arcade steer
-    double forward = -driverController.getRawAxis(1);
-    double turn = -driverController.getRawAxis(2);
-    
-    m_driveTrain.teleopPeriodic(forward, turn);
+    // //Set up arcade steer
+    // double forward = -driverController.getRawAxis(2);
+    // double turn = -driverController.getRawAxis(1);
+    m_driveMode = m_chooser.getSelected();
 
     //Intake controls
     if(driverController.getRawButton(5)){
@@ -131,16 +154,17 @@ public class Robot extends TimedRobot {
       intake.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
-    m_arm.commonPeriodic();
+    // Will be uncommented when arm is ready.
+    //m_arm.commonPeriodic();
   
-    if(driverController.getRawButtonPressed(6) && !m_arm.getArmUpStatus()){
+    /**if(driverController.getRawButtonPressed(6) && !m_arm.getArmUpStatus()){
       m_arm.setLastBurstTime(Timer.getFPGATimestamp());
       m_arm.setArmUpStatus(true);
     }
     else if(driverController.getRawButtonPressed(8) && m_arm.getArmUpStatus()){
       m_arm.setLastBurstTime(Timer.getFPGATimestamp());
       m_arm.setArmUpStatus(false);
-    }  
+    }  */
 
   }
 
@@ -148,8 +172,8 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     //On disable turn off everything
     //done to solve issue with motors "remembering" previous setpoints after reenable
-    m_driveTrain.disabledInit();
-    m_arm.disabledInit();
+    m_robotContainer.getDriveTrain().disabledInit();
+    //m_arm.disabledInit();
     intake.set(ControlMode.PercentOutput, 0);
   }
 }
