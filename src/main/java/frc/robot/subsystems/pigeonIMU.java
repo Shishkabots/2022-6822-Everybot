@@ -8,6 +8,9 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.Constants;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class pigeonIMU extends SubsystemBase {
     double initialX;
     double initialY;
@@ -39,11 +42,14 @@ public class pigeonIMU extends SubsystemBase {
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
         // System.out.println("Pigeon Direction is: " + ypr[0]);
+        SmartDashboard.putNumber("Robot Direction / yaw: ", ypr[0]);
         return ypr[0];
     }
     public double getTemperature() {
+        double temperature = pigeon.getTemp();
         // will require calibraton
-        return pigeon.getTemp();
+        SmartDashboard.putNumber("Robot Temperature: ", temperature);
+        return temperature;
     }
 
     
