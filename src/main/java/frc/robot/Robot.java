@@ -143,7 +143,8 @@ public class Robot extends TimedRobot {
     // //Set up arcade steer
     // double forward = -driverController.getRawAxis(2);
     // double turn = -driverController.getRawAxis(1);
-    
+    m_driveMode = m_chooser.getSelected();
+
     //Intake controls
     if(driverController.getRawButton(5)){
       intake.set(VictorSPXControlMode.PercentOutput, 1);;
