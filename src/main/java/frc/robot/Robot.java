@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    //m_arm.commonPeriodic();
+    // m_arm.commonPeriodic();
     
     // Get time since start of autonomous
     double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
