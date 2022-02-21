@@ -23,6 +23,7 @@ import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.ShishkabotsEncoder;
 import frc.robot.Constants;
 import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,6 +46,8 @@ public class Robot extends TimedRobot {
   private final RobotLogger logger = RobotContainer.getLogger();
   private CameraSubsystem cam1;
   private ColorSensor colorSensor;
+
+  private ShishkabotsEncoder encoder;
 
   private double autoStart = 0;
   private boolean goForAuto = false;
@@ -82,6 +85,7 @@ public class Robot extends TimedRobot {
 
       colorSensor = new ColorSensor();
 
+<<<<<<< HEAD
       m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
       m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
       m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
@@ -92,6 +96,15 @@ public class Robot extends TimedRobot {
       logger.logError("Runtime Exception in robotInit" + e);
       throw e;
   }
+=======
+    m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
+    m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
+    m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
+    SmartDashboard.putData("Drive Modes: ", m_chooser);
+
+    //Initializes the encoders. 
+    encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
+>>>>>>> 184cf83 (Created encoder class.)
   }
 
     /**

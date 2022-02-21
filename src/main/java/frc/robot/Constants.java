@@ -111,4 +111,8 @@ public final class Constants {
     public final static double ARM_TIME_DOWN = 0.35;
     public final static boolean BURST_MODE = false;
 
+    /**
+     * Encoder constants. 
+     */
+    public final static double DISTANCE_PER_PULSE_Rev_11_1271 = 100; // placeholder. real distance needs to be found.
 }
