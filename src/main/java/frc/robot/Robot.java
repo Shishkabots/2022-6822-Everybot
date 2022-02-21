@@ -24,6 +24,7 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
+import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -50,6 +51,8 @@ public class Robot extends TimedRobot {
 
   private String m_driveMode;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  private BallTracker m_ballTracker;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,6 +83,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
     m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
     SmartDashboard.putData("Drive Modes: ", m_chooser);
+
+    m_ballTracker = new BallTracker();
   }
 
     /**
@@ -109,7 +114,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
+    logger.logInfo(m_ballTracker.getBallCoordinates());
     // m_arm.commonPeriodic();
     
     // Get time since start of autonomous
@@ -138,6 +143,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    logger.logError(m_ballTracker.getBallCoordinates());
     // //Set up arcade steer
     // double forward = -driverController.getRawAxis(2);
     // double turn = -driverController.getRawAxis(1);
