@@ -2,34 +2,29 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogTrigger;
-import com.revrobotics.CANSparkMax;
-import frc.robot.Constants;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.Constants;
+import frc.robot.subsystems.Motor;
 
 
 public class Intake extends SubsystemBase{
    /**
    * Creates a new Intake.
    */
-    CANSparkMax intakeSpark;
-
-    double intakeSpeed, outtakeSpeed;
+    Motor intakeMotor;
     
     public Intake() {
-       intakeSpark = new CANSparkMax(Constants.INTAKE_LEAD_MOTOR, MotorType.kBrushed);
-
-       intakeSpeed = Constants.INTAKE_INTAKE_SPEED;
-       outtakeSpeed = Constants.INTAKE_OUTTAKE_SPEED;
+       intakeMotor = new Motor(Constants.INTAKE_LEAD_MOTOR, MotorType.kBrushed);
     } 
     public void intakeBall() {
-       intakeSpark.set(intakeSpeed);
+       intakeMotor.setSpeed(Constants.INTAKE_INTAKE_SPEED);
     }
     public void outtakeBall() {
-        intakeSpark.set(outtakeSpeed);
+        intakeMotor.setSpeed(Constants.INTAKE_OUTTAKE_SPEED);
     }
       
     public void stopIntake() {
-        intakeSpark.set(0);
+        intakeMotor.setSpeed(0);
     }
 
 }
