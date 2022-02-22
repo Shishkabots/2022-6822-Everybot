@@ -8,28 +8,27 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
 public class Intake extends SubsystemBase{
-    /**
+   /**
    * Creates a new Intake.
    */
     CANSparkMax intakeSpark;
 
-    double intakeSpeed;
-    double outtakeSpeed; //is this needed?
+    double intakeSpeed, outtakeSpeed;
     
     public Intake() {
        intakeSpark = new CANSparkMax(Constants.INTAKE_LEAD_MOTOR, MotorType.kBrushed);
 
-       intakeSpeed = 0.5;
-       outtakeSpeed = -0.5;
+       intakeSpeed = Constants.INTAKE_INTAKE_SPEED;
+       outtakeSpeed = Constants.INTAKE_OUTTAKE_SPEED;
     } 
-    public void IntakeBall() {
+    public void intakeBall() {
        intakeSpark.set(intakeSpeed);
     }
-    public void OuttakeBall() {
+    public void outtakeBall() {
         intakeSpark.set(outtakeSpeed);
     }
       
-    public void StopIntake() {
+    public void stopIntake() {
         intakeSpark.set(0);
     }
 

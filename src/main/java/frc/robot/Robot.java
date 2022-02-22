@@ -24,13 +24,13 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.pigeonIMU;
+import frc.robot.subsystems.Imu;
 import frc.robot.Constants;
 
 
 public class Robot extends TimedRobot {
-  public static Intake m_intake = new Intake();
-  public static pigeonIMU m_pigeonIMU = new pigeonIMU(0, 0, 0);
+  public static Intake m_intake = new Intake(); // m_intake and intake are 2 seperate things
+  public static Imu m_imu = new Imu();
   
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;

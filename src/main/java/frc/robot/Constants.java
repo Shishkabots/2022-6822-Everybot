@@ -107,5 +107,10 @@ public final class Constants {
     public final static double ARM_TIME_UP = 0.5;
     public final static double ARM_TIME_DOWN = 0.35;
     public final static boolean BURST_MODE = false;
+    /**
+     * Intake subsystem constants
+     */
+    public final static double INTAKE_INTAKE_SPEED = 0.5;
+    public final static double INTAKE_OUTTAKE_SPEED = -0.5;
 
 }
