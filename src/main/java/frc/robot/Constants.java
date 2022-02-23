@@ -119,4 +119,9 @@ public final class Constants {
     public final static int LEFT_ENCODER_SECOND_CHANNEL = 2; 
     public final static int RIGHT_ENCODER_FIRST_CHANNEL = 3; 
     public final static int RIGHT_ENCODER_SECOND_CHANNEL = 4;
+    /** 
+     * BeamBreakSensor constants.
+     * BEAM_BREAK_SENSOR_CHANNEL is a PLACEHOLDER, until we figure out true channel.
+     */
+    public final static int BEAM_BREAK_SENSOR_CHANNEL = 1;
 }

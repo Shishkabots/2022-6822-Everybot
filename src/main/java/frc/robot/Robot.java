@@ -22,12 +22,14 @@ import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ShishkabotsEncoder;
 import frc.robot.Constants;
 import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.BeamBreakSensor;
 
 
 public class Robot extends TimedRobot {
@@ -44,8 +46,8 @@ public class Robot extends TimedRobot {
   Joystick driverController = new Joystick(0);
 
   private final RobotLogger logger = RobotContainer.getLogger();
-  private CameraSubsystem cam1;
-  private ColorSensor colorSensor;
+  private CameraSubsystem m_cam1;
+  private ColorSensor m_colorSensor;
 
   private ShishkabotsEncoder m_encoder;
 
@@ -58,6 +60,8 @@ public class Robot extends TimedRobot {
   private BallTracker m_ballTracker;
 
   private int m_logCounter;
+  
+  private BeamBreakSensor m_beamBreakSensor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -78,12 +82,12 @@ public class Robot extends TimedRobot {
       goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
 
     
-      // Sets Limelight to driver camera, turn off green LEDs.
-      cam1 = new CameraSubsystem();
-      cam1.setCamToDriverMode();
-      cam1.setLedToOff();
+    // Sets Limelight to driver camera, turn off green LEDs.
+    m_cam1 = new CameraSubsystem();
+    m_cam1.setCamToDriverMode();
+    m_cam1.setLedToOff();
 
-      colorSensor = new ColorSensor();
+    m_colorSensor = new ColorSensor();
 
       m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
       m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
