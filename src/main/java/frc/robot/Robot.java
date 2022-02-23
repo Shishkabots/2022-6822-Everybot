@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
 
   private BallTracker m_ballTracker;
 
+  private int m_logCounter;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -114,8 +116,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    logger.logInfo(m_ballTracker.getBallCoordinates());
-    // m_arm.commonPeriodic();
+    if ((m_logCounter / 10.0) % 1 == 0) {
+      logger.logInfo(m_ballTracker.getBallCoordinates().toString());
+    }    // m_arm.commonPeriodic();
     
     // Get time since start of autonomous
     double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
@@ -143,7 +146,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    logger.logError(m_ballTracker.getBallCoordinates());
+    logger.logInfo("teleop periodic started");
+    if ((m_logCounter / 10.0) % 1 == 0) {
+      logger.logInfo(m_ballTracker.getBallCoordinates().toString());
+    }
     // //Set up arcade steer
     // double forward = -driverController.getRawAxis(2);
     // double turn = -driverController.getRawAxis(1);
@@ -178,7 +184,6 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     //On disable turn off everything
     //done to solve issue with motors "remembering" previous setpoints after reenable
-    m_robotContainer.getDriveTrain().disabledInit();
     //m_arm.disabledInit();
     intake.set(ControlMode.PercentOutput, 0);
   }
