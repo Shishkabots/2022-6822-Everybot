@@ -44,20 +44,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // assign default commands
-    switch(m_driveType) {
-      case ARCADE_DRIVE:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
-        break;
-      case TANK_DRIVE:
-        m_drivetrain.setDefaultCommand(new TankDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain));
-        break;
-      case CURVATURE_DRIVE:
-        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_isQuickTurn, m_drivetrain));
-        break;
-      default:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
-    }
-    
+
+    m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -86,14 +74,7 @@ public class RobotContainer {
     return m_teleopCommand;
   }
 
-  public void setDriveType(String driveType) {
-    if("Tank Drive".equalsIgnoreCase(driveType)) {  
-      m_driveType = DriveType.TANK_DRIVE;
-    }
-    else {
-      m_driveType = DriveType.ARCADE_DRIVE;
-    }
-  }
+
 
   /**
    * Accessor methods 
@@ -128,5 +109,39 @@ public class RobotContainer {
 
   public DriveTrain getDriveTrain() {
     return m_drivetrain;
+  }
+
+  public void checkDrivetype() {
+    switch(m_driveType) {
+      case ARCADE_DRIVE:
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
+        break;
+      case TANK_DRIVE:
+        m_drivetrain.setDefaultCommand(new TankDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain));
+        break;
+      case CURVATURE_DRIVE:
+        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_isQuickTurn, m_drivetrain));
+        break;
+      default:
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
+    }
+  }
+
+  /**
+   * Sets the drive type based on the string passed in (called in after getting SendableChooser in Robot.java)
+   * Also runs the checkDriveType() method, to change the drivetype if necessary.
+   */ 
+  public void setDriveType(String driveType) {
+    if(Constants.TANK_DRIVE.equalsIgnoreCase(driveType)) {  
+      m_driveType = DriveType.TANK_DRIVE;
+    }
+    else if(Constants.CURVATURE_DRIVE.equalsIgnoreCase(driveType)) {
+      m_driveType = DriveType.CURVATURE_DRIVE;
+    }
+    else {
+      m_driveType = DriveType.ARCADE_DRIVE;
+    }
+
+    checkDrivetype();
   }
 } 
