@@ -124,4 +124,5 @@ public final class Constants {
      * BEAM_BREAK_SENSOR_CHANNEL is a PLACEHOLDER, until we figure out true channel.
      */
     public final static int BEAM_BREAK_SENSOR_CHANNEL = 1;
+    public final static String IS_BEAM_INTERRUPTED = "Is beam interrupted?";
 }
