@@ -111,4 +111,12 @@ public final class Constants {
     public final static double ARM_TIME_DOWN = 0.35;
     public final static boolean BURST_MODE = false;
 
+    /**
+     * Encoder constants. 
+     */
+    public final static double DISTANCE_PER_PULSE_Rev_11_1271 = 100; // placeholder. real distance needs to be found.
+    public final static int LEFT_ENCODER_FIRST_CHANNEL = 1; 
+    public final static int LEFT_ENCODER_SECOND_CHANNEL = 2; 
+    public final static int RIGHT_ENCODER_FIRST_CHANNEL = 3; 
+    public final static int RIGHT_ENCODER_SECOND_CHANNEL = 4;
 }

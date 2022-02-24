@@ -23,6 +23,7 @@ import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.ShishkabotsEncoder;
 import frc.robot.Constants;
 import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,6 +46,8 @@ public class Robot extends TimedRobot {
   private final RobotLogger logger = RobotContainer.getLogger();
   private CameraSubsystem cam1;
   private ColorSensor colorSensor;
+
+  private ShishkabotsEncoder m_encoder;
 
   private double autoStart = 0;
   private boolean goForAuto = false;
@@ -88,11 +91,13 @@ public class Robot extends TimedRobot {
       SmartDashboard.putData("Drive Modes: ", m_chooser);
 
       m_ballTracker = new BallTracker();
+      //Initializes the encoders. 
+      m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
     }  catch (Exception e) {
       logger.logError("Runtime Exception in robotInit" + e);
       throw e;
   }
-  }
+}
 
     /**
    * This function is called every robot packet, no matter the mode. Use this for items like
