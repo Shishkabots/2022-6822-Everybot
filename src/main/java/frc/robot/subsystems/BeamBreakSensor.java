@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BeamBreakSensor {
     private DigitalInput m_beamBreakSensor;
@@ -17,5 +18,9 @@ public class BeamBreakSensor {
         return m_beamBreakSensor.get();
     }
 
+    // Puts value on SmartDashboard. (true/false)
+    public void putValueOnSmartDashboard() {
+        SmartDashboard.putBoolean("Beam broken?", getValue());
+    }
 
 }
