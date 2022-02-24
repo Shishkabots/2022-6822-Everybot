@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   private CameraSubsystem cam1;
   private ColorSensor colorSensor;
 
-  private ShishkabotsEncoder encoder;
+  private ShishkabotsEncoder m_encoder;
 
   private double autoStart = 0;
   private boolean goForAuto = false;
@@ -85,27 +85,19 @@ public class Robot extends TimedRobot {
 
       colorSensor = new ColorSensor();
 
-<<<<<<< HEAD
       m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
       m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
       m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
       SmartDashboard.putData("Drive Modes: ", m_chooser);
 
       m_ballTracker = new BallTracker();
+      //Initializes the encoders. 
+      m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
     }  catch (Exception e) {
       logger.logError("Runtime Exception in robotInit" + e);
       throw e;
   }
-=======
-    m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
-    m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
-    m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
-    SmartDashboard.putData("Drive Modes: ", m_chooser);
-
-    //Initializes the encoders. 
-    encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
->>>>>>> 184cf83 (Created encoder class.)
-  }
+}
 
     /**
    * This function is called every robot packet, no matter the mode. Use this for items like

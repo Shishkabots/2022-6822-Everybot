@@ -2,10 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import frc.robot.Constants;
 
 public class ShishkabotsEncoder {
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
+    private Encoder m_leftEncoder;
+    private Encoder m_rightEncoder;
     private double distancePerPulse;
     
     /**
@@ -14,19 +15,19 @@ public class ShishkabotsEncoder {
      * @param distancePerPulse
      */
     public ShishkabotsEncoder(double distancePerPulse) {
-        leftEncoder = new Encoder(1, 2, false, EncodingType.k4X);
-        rightEncoder = new Encoder(3, 4, true, EncodingType.k4X); // Count direction reversed.
+        m_leftEncoder = new Encoder(Constants.LEFT_ENCODER_FIRST_CHANNEL, Constants.LEFT_ENCODER_SECOND_CHANNEL, false, EncodingType.k4X);
+        m_rightEncoder = new Encoder(Constants.RIGHT_ENCODER_FIRST_CHANNEL, Constants.RIGHT_ENCODER_SECOND_CHANNEL, true, EncodingType.k4X); // Count direction reversed.
         this.distancePerPulse = distancePerPulse;
-        leftEncoder.setDistancePerPulse(distancePerPulse);
-        rightEncoder.setDistancePerPulse(distancePerPulse);
+        m_leftEncoder.setDistancePerPulse(distancePerPulse);
+        m_rightEncoder.setDistancePerPulse(distancePerPulse);
     }
 
     /**
      * Resets the distance of all/both encoders to zero. 
      */
-    public void Reset() {
-        leftEncoder.reset();
-        rightEncoder.reset();
+    public void reset() {
+        m_leftEncoder.reset();
+        m_rightEncoder.reset();
     }
 
     /**
@@ -34,7 +35,7 @@ public class ShishkabotsEncoder {
      * @return average distance.
      */
     public double getDistance() {
-        return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2;
+        return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2;
     }
 
 
