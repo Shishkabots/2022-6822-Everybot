@@ -1,4 +1,5 @@
 import edu.wpi.first.wpilibj.Ultrasonic;
+import frc.robot.Constants;
 
 public class RangeFinderSensor {
     private Ultrasonic m_rangeFinderSensor;
@@ -18,7 +19,7 @@ public class RangeFinderSensor {
     }
 
     public double getRangeMM() {
-        return m_rangeFinderSensor.getRangeMM()
+        return m_rangeFinderSensor.getRangeMM();
     }
 
     public void setEnabled(boolean enable) {
@@ -26,7 +27,7 @@ public class RangeFinderSensor {
     }
 
     public boolean isRangeValid() {
-        m_rangeFinderSensor.isRangeValid();
+        return m_rangeFinderSensor.isRangeValid();
     }
 
     public void closeSensor() {
