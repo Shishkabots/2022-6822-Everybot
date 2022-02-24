@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
       m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
       m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
       m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
-      SmartDashboard.putData("Drive Modes: ", m_chooser);
+      SmartDashboard.putData("Drive Choices: ", m_chooser);
 
       m_ballTracker = new BallTracker();
     }  catch (Exception e) {
@@ -174,17 +174,12 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     try {
       logger.logInfo("Teleop periodic started");
-      if ((m_logCounter / 100.0) % 1 == 0) {
-        if (m_ballTracker.chooseMostConfidentBall() != null) {
-          logger.logInfo(m_ballTracker.chooseMostConfidentBall().toString());
-        }
-        else {
-          logger.logInfo("No ball located!");
-        }
+      if (m_ballTracker.chooseMostConfidentBall() != null) {
+        SmartDashboard.putString("Most confident ball: ", m_ballTracker.chooseMostConfidentBall().toString());
       }
-      // //Set up arcade steer
-      // double forward = -driverController.getRawAxis(2);
-      // double turn = -driverController.getRawAxis(1);
+      else {
+        SmartDashboard.putString("Most confident ball: ", "No ball located!");
+      }
       
       m_driveMode = m_chooser.getSelected();
       m_robotContainer.setDriveType(m_driveMode);
