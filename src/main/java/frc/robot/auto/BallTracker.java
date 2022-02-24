@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.logging.RobotLogger;
 import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class BallTracker {
@@ -32,7 +33,7 @@ public class BallTracker {
         String networkTableEntryAsString = m_ballDataTable.getEntry("detections").getString(null);
 
         if (networkTableEntryAsString == null) {
-            logger.logError("Image Coordinate Table entry is null");
+            SmartDashboard.putString("Ball Data status: ", "Image Coordinate Table entry is null");
             return null;
         }
         JSONArray jsonArray = new JSONArray(networkTableEntryAsString);
