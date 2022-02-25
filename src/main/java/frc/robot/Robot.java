@@ -182,17 +182,17 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     try {
-      logger.logInfo("Teleop periodic started");
-      if (m_ballTracker.chooseMostConfidentBall() != null) {
-        SmartDashboard.putString("Most confident ball: ", m_ballTracker.chooseMostConfidentBall().toString());
-      }
-      else {
-        SmartDashboard.putString("Most confident ball: ", "No ball located!");
-      }
+      // if (m_ballTracker.chooseMostConfidentBall() != null) {
+      //   SmartDashboard.putString("Most confident ball: ", m_ballTracker.chooseMostConfidentBall().toString());
+      // }
+      // else {
+      //   SmartDashboard.putString("Most confident ball: ", "No ball located!");
+      // }
 
-      m_driveMode = m_chooser.getSelected();
-      m_robotContainer.setDriveType(m_driveMode);
+       m_driveMode = m_chooser.getSelected();
+       m_robotContainer.setDriveType(m_driveMode);
 
+      //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
       //Intake controls
       if(driverController.getRawButton(5)){
         intake.set(VictorSPXControlMode.PercentOutput, 1);;
