@@ -183,9 +183,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Most confident ball: ", "No ball located!");
       }*/
 
-      m_driveMode = m_chooser.getSelected();
-      m_robotContainer.setDriveType(m_driveMode);
+       m_driveMode = m_chooser.getSelected();
+       m_robotContainer.setDriveType(m_driveMode);
 
+      //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
       //Intake controls
       if(driverController.getRawButton(5)){
         intake.set(VictorSPXControlMode.PercentOutput, 1);;

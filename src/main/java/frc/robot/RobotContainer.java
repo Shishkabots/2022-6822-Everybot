@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.io.IOException;
 import frc.robot.auto.BallTracker;
 import frc.robot.auto.AutoCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -119,16 +120,17 @@ public class RobotContainer {
    public void checkDrivetype() {
     switch(m_driveType) {
       case ARCADE_DRIVE:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+        SmartDashboard.putNumber("test arcade", m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)); 
         break;
       case TANK_DRIVE:
-        m_drivetrain.setDefaultCommand(new TankDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain));
+        m_drivetrain.setDefaultCommand(new TankDrive(() -> (m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y), m_drivetrain));
         break;
       case CURVATURE_DRIVE:
-        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_isQuickTurn, m_drivetrain));
+        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_isQuickTurn, m_drivetrain));
         break;
       default:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
     }
   }
 
