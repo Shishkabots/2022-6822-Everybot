@@ -21,9 +21,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Imu;
 import frc.robot.subsystems.ShishkabotsEncoder;
 import frc.robot.Constants;
 import frc.robot.auto.BallTracker;
@@ -33,7 +35,9 @@ import frc.robot.subsystems.BeamBreakSensor;
 
 
 public class Robot extends TimedRobot {
-
+  public static Intake m_intake = new Intake(); // m_intake and intake are 2 seperate things
+  public static Imu m_imu = new Imu();
+  
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;
   //private Arm m_arm;

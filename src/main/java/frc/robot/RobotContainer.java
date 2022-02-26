@@ -59,6 +59,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Removes speed throttling during ArcadeDrive, allows robot to move at max speed.
     new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTTRIGGER).whenHeld(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_FULLSPEED)); 
+    new JoystickButton(m_driverStick, Constants.JOYSTICK_BUTTON_Y).whenHeld(new IntakeBall());
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
