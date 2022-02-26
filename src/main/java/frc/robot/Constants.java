@@ -125,4 +125,11 @@ public final class Constants {
      */
     public final static int BEAM_BREAK_SENSOR_CHANNEL = 1;
     public final static String IS_BEAM_INTERRUPTED = "Is beam interrupted?";
+
+    /**
+     * Range Finder constants.
+     * PING_CHANNEL and ECHO_CHANNEL are placeholders, to be changed when the range finder is attached to hardware.
+     */
+    public final static int PING_CHANNEL = 1;
+    public final static int ECHO_CHANNEL = 2;
 }
