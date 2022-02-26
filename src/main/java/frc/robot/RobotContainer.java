@@ -114,7 +114,6 @@ public class RobotContainer {
     switch(m_driveType) {
       case ARCADE_DRIVE:
         m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
-        SmartDashboard.putNumber("test arcade", m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)); 
         break;
       case TANK_DRIVE:
         m_drivetrain.setDefaultCommand(new TankDrive(() -> (m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y), m_drivetrain));
