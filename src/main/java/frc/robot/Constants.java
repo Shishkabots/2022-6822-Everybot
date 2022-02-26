@@ -22,6 +22,9 @@ public final class Constants {
     public final static int DRIVETRAIN_RIGHT_BACK_MOTOR = 2;
     public final static int DRIVETRAIN_LEFT_FRONT_MOTOR = 3;
     public final static int DRIVETRAIN_LEFT_BACK_MOTOR = 4;
+    public final static String ARCADE_DRIVE = "Arcade Drive";
+    public final static String TANK_DRIVE = "Tank Drive";
+    public final static String CURVATURE_DRIVE = "Curvature Drive";
     // Here onwards are hypothetical values for probable CAN IDs for these motors.
     public final static int SHOOTER_LEAD_MOTOR = 5;
     public final static int SHOOTER_FOLLOWER_MOTOR = 6;
@@ -35,8 +38,8 @@ public final class Constants {
 
     // Joystick IDs    
     public final static int JOYSTICK_LEFT_X = 0;
-    public final static int JOYSTICK_LEFT_Y = 1;
-    public final static int JOYSTICK_RIGHT_X = 2;
+    public final static int JOYSTICK_LEFT_Y = 2;
+    public final static int JOYSTICK_RIGHT_X = 1;
     public final static int JOYSTICK_RIGHT_Y = 3;
     
     public final static int JOYSTICK_BUTTON_X = 1;  
@@ -113,4 +116,25 @@ public final class Constants {
     public final static double INTAKE_INTAKE_SPEED = 0.5;
     public final static double INTAKE_OUTTAKE_SPEED = -0.5;
 
+    /**
+     * Encoder constants. 
+     */
+    public final static double DISTANCE_PER_PULSE_Rev_11_1271 = 100; // placeholder. real distance needs to be found.
+    public final static int LEFT_ENCODER_FIRST_CHANNEL = 1; 
+    public final static int LEFT_ENCODER_SECOND_CHANNEL = 2; 
+    public final static int RIGHT_ENCODER_FIRST_CHANNEL = 3; 
+    public final static int RIGHT_ENCODER_SECOND_CHANNEL = 4;
+    /** 
+     * BeamBreakSensor constants.
+     * BEAM_BREAK_SENSOR_CHANNEL is a PLACEHOLDER, until we figure out true channel.
+     */
+    public final static int BEAM_BREAK_SENSOR_CHANNEL = 1;
+    public final static String IS_BEAM_INTERRUPTED = "Is beam interrupted?";
+
+    /**
+     * Range Finder constants.
+     * PING_CHANNEL and ECHO_CHANNEL are placeholders, to be changed when the range finder is attached to hardware.
+     */
+    public final static int PING_CHANNEL = 1;
+    public final static int ECHO_CHANNEL = 2;
 }
