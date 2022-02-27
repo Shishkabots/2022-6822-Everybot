@@ -8,6 +8,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.logging.RobotLogger;
 import frc.robot.RobotContainer;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+import com.ctre.phoenix.ErrorCode;
 
 public class Imu extends SubsystemBase {
     /**
@@ -17,6 +19,7 @@ public class Imu extends SubsystemBase {
 
     PigeonIMU m_pigeon = new PigeonIMU(0);
     private final RobotLogger logger = RobotContainer.getLogger();
+    private double[] ypr;
 
     /*
     For reference:
@@ -39,16 +42,34 @@ public class Imu extends SubsystemBase {
         }
     }
 
-    public double getDirection() {
-        double[] ypr = new double[3];
+    public double getYaw() {
+        ypr = new double[3];
         m_pigeon.getYawPitchRoll(ypr); // https://docs.rs/ctre/0.6.1/ctre/sensors/pigeon/struct.PigeonIMU.html#method.get_yaw_pitch_roll
         SmartDashboard.putNumber("Robot Direction / yaw: ", ypr[0]);
         return ypr[0];
+    }
+
+    public double getPitch() {
+        ypr = new double[3];
+        m_pigeon.getYawPitchRoll(ypr);
+        SmartDashboard.putNumber("Robot Pitch", ypr[1]);
+        return ypr[1];
+    }
+
+    public double getRoll() {
+        ypr = new double[3];
+        m_pigeon.getYawPitchRoll(ypr);
+        SmartDashboard.putNumber("Robot Roll: ", ypr[2]);
+        return ypr[2];
     }
     public double getTemperature() {
         double temperature = m_pigeon.getTemp();
         // will require calibraton
         SmartDashboard.putNumber("Robot Temperature: ", temperature);
         return temperature;
+    }
+
+    public ErrorCode enterCalibrationMode(CalibrationMode calMode) {
+        return(m_pigeon.enterCalibrationMode(calMode));
     }
 }
