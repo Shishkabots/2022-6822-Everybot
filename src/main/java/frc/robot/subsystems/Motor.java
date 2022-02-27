@@ -69,4 +69,15 @@ public class Motor {
     public void burnFlash() {
         m_motor.burnFlash();
     }
+
+    /**
+     * Clears sticky faults for Motor object.
+     */
+    public void clearFaults() {
+        m_motor.clearFaults();
+    }
+
+    public void set(double speed) {
+        m_motor.set(speed);
+    }
 }

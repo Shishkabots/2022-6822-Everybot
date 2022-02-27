@@ -30,6 +30,8 @@ import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.BeamBreakSensor;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.commands.ArcadeDrive;
 
 
 public class Robot extends TimedRobot {
@@ -56,10 +58,6 @@ public class Robot extends TimedRobot {
 
   private String m_driveMode;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  private BallTracker m_ballTracker;
-
-  private int m_logCounter;
   
   private BeamBreakSensor m_beamBreakSensor;
 
@@ -75,6 +73,7 @@ public class Robot extends TimedRobot {
       logger.logInfo("Robot initialized."); 
     
       m_robotContainer = new RobotContainer();
+      m_driveTrain = m_robotContainer.getDriveTrain();
       //m_arm = new Arm();
     
       //add a thing on the dashboard to turn off auto if needed
@@ -94,7 +93,6 @@ public class Robot extends TimedRobot {
       m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
       SmartDashboard.putData("Drive Choices: ", m_chooser);
 
-      m_ballTracker = new BallTracker();
       //Initializes the encoders. 
       m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
     }  catch (Exception e) {
@@ -141,15 +139,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     try {
-      if ((m_logCounter / 100.0) % 1 == 0) {
-        if (m_ballTracker.chooseMostConfidentBall() != null) {
-          logger.logInfo(m_ballTracker.chooseMostConfidentBall().toString());
-        }
-        else {
-          logger.logInfo("No ball located!");
-        }
-      } // m_arm.commonPeriodic();
-    
       // The code below is from everybot and will be moved out eventually, so no need to put into try-catch right now.
       // Get time since start of autonomous
       double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
@@ -183,12 +172,12 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     try {
       logger.logInfo("Teleop periodic started");
-      if (m_ballTracker.chooseMostConfidentBall() != null) {
+      /*if (m_ballTracker.chooseMostConfidentBall() != null) {
         SmartDashboard.putString("Most confident ball: ", m_ballTracker.chooseMostConfidentBall().toString());
       }
       else {
         SmartDashboard.putString("Most confident ball: ", "No ball located!");
-      }
+      }*/
 
       m_driveMode = m_chooser.getSelected();
       m_robotContainer.setDriveType(m_driveMode);
