@@ -15,6 +15,8 @@ import java.util.function.BooleanSupplier;
 import frc.robot.logging.RobotLogger;
 import java.util.logging.Level;
 import java.io.IOException;
+import frc.robot.auto.BallTracker;
+import frc.robot.auto.AutoCommand;
 
 
 /**
@@ -35,6 +37,8 @@ public class RobotContainer {
   private Command m_teleopCommand;
   private final DriveTrain m_drivetrain = new DriveTrain();
   private final Joystick m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
+  private final Imu m_imu = new Imu();
+  private final BallTracker m_ballTracker = new BallTracker();
   private DriveType m_driveType = DriveType.ARCADE_DRIVE;
   private static RobotLogger logger;
   
@@ -46,6 +50,8 @@ public class RobotContainer {
     // assign default commands
     m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker);
+
     // Configure the button bindings
     configureButtonBindings();
   }

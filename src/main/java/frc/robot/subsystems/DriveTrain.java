@@ -5,11 +5,15 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 
 public class DriveTrain extends SubsystemBase {
 
@@ -49,6 +53,21 @@ public class DriveTrain extends SubsystemBase {
     m_leftBackMotor = new Motor(Constants.DRIVETRAIN_LEFT_BACK_MOTOR, MotorType.kBrushed);
     m_rightFrontMotor = new Motor(Constants.DRIVETRAIN_RIGHT_FRONT_MOTOR, MotorType.kBrushed);
     m_rightBackMotor = new Motor(Constants.DRIVETRAIN_RIGHT_BACK_MOTOR, MotorType.kBrushed);
+
+    m_leftFrontMotor.clearFaults();
+    m_leftBackMotor.clearFaults();
+    m_rightFrontMotor.clearFaults();
+    m_rightBackMotor.clearFaults();
+
+    /*m_leftFrontMotor.configFactoryDefault();
+    m_leftBackMotor.configFactoryDefault();
+    m_rightBackMotor.configFactoryDefault();
+    m_rightFrontMotor.configFactoryDefault();*/
+
+    m_leftFrontMotor.setIdleMode(false);
+    m_leftBackMotor.setIdleMode(false);
+    m_rightFrontMotor.setIdleMode(false);
+    m_rightBackMotor.setIdleMode(false);
 
     /**
      * Inverts all motors based on value of the constant, which is currently true.
@@ -115,5 +134,24 @@ public class DriveTrain extends SubsystemBase {
     m_leftBackMotor.setSpeed(0);
     m_rightFrontMotor.setSpeed(0);
     m_rightBackMotor.setSpeed(0);
+  }
+
+
+
+  public void setAutoTurnDirection(int direction) {
+    /*if (direction == Constants.STOP_TURNING) {
+        m_leftFrontMotor.set(0);
+        m_rightSide.set(0);
+    }*/
+   if (direction == Constants.CLOCKWISE) {
+      m_leftFrontMotor.set(-0.15);
+      m_rightFrontMotor.set(0.15);
+      m_rightBackMotor.set(0.15);
+    }
+    else if (direction == Constants.COUNTER_CLOCKWISE) {
+        m_leftFrontMotor.set(0.15);
+        m_rightFrontMotor.set(-0.15);
+        m_rightBackMotor.set(-0.15);
+    }
   }
 }
