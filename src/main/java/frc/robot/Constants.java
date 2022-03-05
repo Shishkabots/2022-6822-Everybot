@@ -43,9 +43,9 @@ public final class Constants {
 
     // Joystick IDs    
     public final static int JOYSTICK_LEFT_X = 0;
-    public final static int JOYSTICK_LEFT_Y = 2;
-    public final static int JOYSTICK_RIGHT_X = 1;
-    public final static int JOYSTICK_RIGHT_Y = 3;
+    public final static int JOYSTICK_LEFT_Y = 1; 
+    public final static int JOYSTICK_RIGHT_X = 2;
+    public final static int JOYSTICK_RIGHT_Y = 3; 
     
     public final static int JOYSTICK_BUTTON_X = 1;  
     public final static int JOYSTICK_BUTTON_A = 2;      

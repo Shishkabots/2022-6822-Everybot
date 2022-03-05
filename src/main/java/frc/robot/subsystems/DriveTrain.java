@@ -73,8 +73,6 @@ public class DriveTrain extends SubsystemBase {
      * Inverts all motors based on value of the constant, which is currently true.
      * Currently the robot goes battery-first which is dangerous, so this will flip that direction.
      */
-    m_leftFrontMotor.setInverted(Constants.IS_INVERTED);
-    m_leftBackMotor.setInverted(Constants.IS_INVERTED);
     m_rightFrontMotor.setInverted(Constants.IS_INVERTED);
     m_rightBackMotor.setInverted(Constants.IS_INVERTED);
 
