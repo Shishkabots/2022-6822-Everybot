@@ -175,7 +175,7 @@ public class AutoCommand extends CommandBase {
       error = setpoint - ((mostConfidentBallCoordinates.getXMin() + mostConfidentBallCoordinates.getXMax()) / 2); // Error = Target - Actual
 
       integral = (error * .02);
-      //derivative = (error - previous_error) / .02;
+      //DG - derivative = (error - previous_error) / .02;
 
       // If the current error is within the error leeway, the robot will stop turning.
       if (Math.abs(error) < Constants.ERROR_LEEWAY) {
