@@ -145,4 +145,15 @@ public final class Constants {
      */
     public final static int PING_CHANNEL = 1;
     public final static int ECHO_CHANNEL = 2;
+
+
+    public final static String DIRECTION_KEY = "Direction: ";
+    public final static int CAMERA_WIDTH_IN_PIXELS_OVER_TWO = 320;
+
+    /**
+     * Arm and intake constants
+     */
+    public final static double SPEED_TO_SPIT_OUT_BALL = -1;
+
+    public final static double ERROR_LEEWAY = 3;
 }

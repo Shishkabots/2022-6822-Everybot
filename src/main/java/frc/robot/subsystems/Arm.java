@@ -74,18 +74,12 @@ public class Arm extends SubsystemBase {
     return m_armUp;
   }
 
-  // Returns private double m_lastBurstTime
-  public double getLastBurstTime() {
-    return m_lastBurstTime;
-  }
-
-  // Sets private boolean m_armUp 
-  public void setArmUpStatus(boolean armUp) {
-    m_armUp = armUp;
-  }
-
   // Sets private double m_lastBurstTime
   public void setLastBurstTime(double lastBurstTime) {
     m_lastBurstTime = lastBurstTime;
+  }
+
+  public void setSpeed(double speed) {
+    m_armMotor.set(speed);
   }
 }
