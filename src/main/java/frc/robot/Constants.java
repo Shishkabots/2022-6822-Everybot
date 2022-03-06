@@ -143,8 +143,9 @@ public final class Constants {
      * Range Finder constants.
      * PING_CHANNEL and ECHO_CHANNEL are placeholders, to be changed when the range finder is attached to hardware.
      */
-    public final static int PING_CHANNEL = 1;
-    public final static int ECHO_CHANNEL = 2;
+    public final static int ULTRASONIC_ANALOG_PORT = 0;
+    public final static double ULTRASONIC_TO_CM_CONVERSION = 0.125;
+    public final static double ULTRASONIC_TO_IN_CONVERSION = 0.0492;
 
 
     public final static String DIRECTION_KEY = "Direction: ";
@@ -154,6 +155,7 @@ public final class Constants {
      * Arm and intake constants
      */
     public final static double SPEED_TO_SPIT_OUT_BALL = -1;
+    public final static double BALL_DROP_DISTANCE_INCHES = 30; 
 
     public final static double ERROR_LEEWAY = 3;
 }

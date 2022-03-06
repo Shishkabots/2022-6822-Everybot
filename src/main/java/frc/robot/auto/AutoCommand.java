@@ -24,7 +24,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.*;
-
+import frc.robot.subsystems.UltrasonicSensor;
 
 /** An example command that uses an example subsystem. */
 public class AutoCommand extends CommandBase {
@@ -36,6 +36,7 @@ public class AutoCommand extends CommandBase {
     private ColorSensor m_colorSensor;
     private Intake m_intake;
     private Arm m_arm;
+    private UltrasonicSensor m_ultrasonicSensor;
 
     private double kP = 0.3, kI = 0.3, kD = 1;
     private double integral, previous_error, error;
@@ -59,11 +60,12 @@ public class AutoCommand extends CommandBase {
    *
    * @param  drivetrain The drivetrain used by this command.
    */
-  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, ColorSensor colorSensor) {
+  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor) {
     m_pigeon = imu;
     m_driveTrain = driveTrain;
     m_ballTracker = ballTracker;
     m_arm = arm;
+    m_ultrasonicSensor = ultrasonicSensor;
     m_colorSensor = colorSensor;
     addRequirements(m_pigeon, m_driveTrain);
   }
@@ -102,9 +104,9 @@ public class AutoCommand extends CommandBase {
   public void checkAutonomousState() {
     switch (m_autonomousState) {
       case SCORE_PRELOADED_BALL:
-        /*while (ballPickedUp()) {
+        while (ballPickedUp()) {
           scoreBall();
-        }*/
+        }
         SmartDashboard.putString("Autocommand state", "SCORE_PRELOADED_BALL");
         // Once the preloaded ball is dropped, set state to go to ball.
         m_autonomousState = AutonomousState.GO_TO_BALL;
@@ -124,6 +126,13 @@ public class AutoCommand extends CommandBase {
         if (ballPickedUp()) {
           PIDHubTurningControl();
           turnToHub();
+          if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
+            goStraight();
+          }
+          else {
+            stopMoving();
+            scoreBall();
+          }
           // add rangesensor stop here 
           //while (m_rangeFinderSensor > 20 inches)
           //goStraight();
@@ -244,6 +253,16 @@ public class AutoCommand extends CommandBase {
       m_driveTrain.arcadedrive(0.3, 0);
     } catch (Exception e) {
       logger.logError("Runtime Exception while trying to go straight " + e);
+      throw e;
+    }
+  }
+
+  // Stops motion of robot
+  public void stopMoving() {
+    try {
+      m_driveTrain.arcadedrive(0, 0);
+    } catch (Exception e) {
+      logger.logError("Runtime Exception while trying to stop motion " + e);
       throw e;
     }
   }
