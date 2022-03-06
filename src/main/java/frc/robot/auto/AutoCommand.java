@@ -39,11 +39,10 @@ public class AutoCommand extends CommandBase {
     private UltrasonicSensor m_ultrasonicSensor;
 
     private double kP = 0.3, kI = 0.3, kD = 1;
-    private double integral, previous_error, error;
+    private double derivative, previous_error, error;
     private int setpoint = Constants.CAMERA_WIDTH_IN_PIXELS_OVER_TWO;
     private double rcw;
-    private double imu_error;
-    private double imu_rcw;
+    private double imu_error, imu_rcw, imu_derivative, imu_previous_error;
     // Arm is up when match starts
     private boolean armIsUp;
 
@@ -174,15 +173,16 @@ public class AutoCommand extends CommandBase {
     try {
       error = setpoint - ((mostConfidentBallCoordinates.getXMin() + mostConfidentBallCoordinates.getXMax()) / 2); // Error = Target - Actual
 
-      integral = (error * .02);
-      //DG - derivative = (error - previous_error) / .02;
+      // integral = (error * .02); DG add back if derivative doesn't work
+
+      derivative = (error - previous_error) / 0.02;
 
       // If the current error is within the error leeway, the robot will stop turning.
       if (Math.abs(error) < Constants.ERROR_LEEWAY) {
         rcw = 0;
       }
       else {
-        rcw = (kP * error + kI * integral);
+        rcw = (kP * error + kD * derivative);
       }
 
       //Sensitivity adjustment, since the rcw value originally is in hundreds (it is the pixel error + integral).
@@ -193,6 +193,7 @@ public class AutoCommand extends CommandBase {
       else {
         rcw = Math.sqrt(rcw) / 10.0;
       }
+      previous_error = error;
       SmartDashboard.putString("values", rcw + " is rcw. " + "error is " + kP + ". integral is " + kI);
     }
     catch (Exception e) {
@@ -220,15 +221,15 @@ public class AutoCommand extends CommandBase {
       // Invert the yaw so that the robot moves the right way (if the robot is pointed left the error is positive so the robot will turn right)
       imu_error = -1 * m_pigeon.getYaw();
 
-      integral = (imu_error * .02);
-      //derivative = (error - previous_error) / .02;
+      //integral = (imu_error * .02); DG add back if derivative doesn't work
+      imu_derivative = (imu_error - imu_previous_error) / 0.02;
 
       // If the current error is within the error leeway, the robot will stop turning.
       if (Math.abs(imu_error) < Constants.ERROR_LEEWAY) {
         imu_rcw = 0;
       }
       else {
-        imu_rcw = (kP * imu_error + kI * integral);
+        imu_rcw = (kP * imu_error + kD * imu_derivative);
       }
 
       //Sensitivity adjustment, since the rcw value originally is in hundreds (it is the pixel error + integral).
@@ -240,6 +241,7 @@ public class AutoCommand extends CommandBase {
       else {
         imu_rcw = Math.sqrt(imu_rcw) / 10.0;
       }
+      imu_previous_error = imu_error;
       SmartDashboard.putString("values", imu_rcw + " is rcw. " + "error is " + kP + ". integral is " + kI);
     }
     catch (Exception e) {
