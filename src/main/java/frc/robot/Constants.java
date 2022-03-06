@@ -155,7 +155,10 @@ public final class Constants {
      * Arm and intake constants
      */
     public final static double SPEED_TO_SPIT_OUT_BALL = -1;
-    public final static double BALL_DROP_DISTANCE_INCHES = 30; 
+    public final static double BALL_DROP_DISTANCE_INCHES = 10; 
 
     public final static double ERROR_LEEWAY = 3;
+    public final static String AUTOCOMMAND_KEY = "Autocommand state";
+    public final static double TURN_SPEED = 0.3;
+    public final static double GO_STRAIGHT_SPEED = 0.3;
 }

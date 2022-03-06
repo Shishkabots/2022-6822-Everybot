@@ -45,7 +45,7 @@ public class AutoCommand extends CommandBase {
     private double imu_error;
     private double imu_rcw;
     // Arm is up when match starts
-    private boolean armIsUp = true;
+    private boolean armIsUp;
 
     private AutonomousState m_autonomousState;
 
@@ -81,10 +81,10 @@ public class AutoCommand extends CommandBase {
 
   @Override
   public void execute() {
-      //checkAutonomousState(); will be uncommented when the full method is done. DG
-      chooseMostConfidentBall();
+      checkAutonomousState();
+      /*chooseMostConfidentBall();
       PIDBallTurningControl();
-      turnToBall();
+      turnToBall();*/ //will be removed when checkAutonomousState is confirmed to work DG
   }
 
 
@@ -104,26 +104,35 @@ public class AutoCommand extends CommandBase {
   public void checkAutonomousState() {
     switch (m_autonomousState) {
       case SCORE_PRELOADED_BALL:
-        while (ballPickedUp()) {
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_PRELOADED_BALL");
+        armIsUp = true;
+        while (isBallPickedUp()) {
           scoreBall();
         }
-        SmartDashboard.putString("Autocommand state", "SCORE_PRELOADED_BALL");
         // Once the preloaded ball is dropped, set state to go to ball.
         m_autonomousState = AutonomousState.GO_TO_BALL;
         break;
       case GO_TO_BALL:
-        SmartDashboard.putString("Autocommand state", "GO_TO_BALL");
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
         chooseMostConfidentBall();
-        PIDBallTurningControl();
-        turnToBall();
-        goStraight();
-        pickUpBall();
-        if (ballPickedUp()) {
+        // DG - maybe remove this below line? Might induce unnecessary stopping of robot when the PID would just have it turn back to find the ball or when ball falls out of frmae when too near
+        if (mostConfidentBallCoordinates != null) {
+          PIDBallTurningControl();
+          turnToBall();
+          goStraight();
+          pickUpBall();
+        }
+        if (isBallPickedUp()) {
+          double timeWhenEnteredThisLoop = Timer.getFPGATimestamp();
+          while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
+            goStraight();
+          }
           m_autonomousState = AutonomousState.SCORE_BALL;
         }
         break;
       case SCORE_BALL:
-        if (ballPickedUp()) {
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
+        if (isBallPickedUp()) {
           PIDHubTurningControl();
           turnToHub();
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
@@ -132,23 +141,28 @@ public class AutoCommand extends CommandBase {
           else {
             stopMoving();
             scoreBall();
+            m_autonomousState = AutonomousState.GO_TO_BALL;
           }
-          // add rangesensor stop here 
-          //while (m_rangeFinderSensor > 20 inches)
-          //goStraight();
-          //scoreBall();
+        }
+        else {
+          m_autonomousState = AutonomousState.GO_TO_BALL;
         }
         break;
     }
   }
 
   public void chooseMostConfidentBall() {
+    // DG - potential error here? -> if the ball goes out of frame after being scanned, robot may continue turning under guise that ball is present
+    // However, adding an if statement to set mostConfidentBallCoordinates to null if the ballTracker.chooseMostConfidentBall() returns null may make the program default to spin in a direction
+    // The current statement would have it spin back to where it last saw the ball relative to center and this should have it hopefully correct itself and find ball again.
     mostConfidentBallCoordinates = m_ballTracker.chooseMostConfidentBall();
     if (mostConfidentBallCoordinates != null) {
-        SmartDashboard.putString("Most confident ball: ", mostConfidentBallCoordinates.toString());
+      SmartDashboard.putString("Most confident ball: ", mostConfidentBallCoordinates.toString());
     }
     else {
-        SmartDashboard.putString("Most confident ball: ", "No ball located!");
+      // DG Turns clockwise slowly if no ball found
+      m_driveTrain.arcadedrive(0, Constants.TURN_SPEED);
+      SmartDashboard.putString("Most confident ball: ", "No ball located!");
     }
 }
 
@@ -250,7 +264,7 @@ public class AutoCommand extends CommandBase {
    */
   public void goStraight() {
     try {
-      m_driveTrain.arcadedrive(0.3, 0);
+      m_driveTrain.arcadedrive(Constants.GO_STRAIGHT_SPEED, 0);
     } catch (Exception e) {
       logger.logError("Runtime Exception while trying to go straight " + e);
       throw e;
@@ -298,7 +312,7 @@ public class AutoCommand extends CommandBase {
    * TO BE TESTED.
    * @return
    */
-  public boolean ballPickedUp() {
+  public boolean isBallPickedUp() {
     return (m_colorSensor.checkColor().equals(""));
   }
 }
