@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AnalogTrigger;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
 import frc.robot.subsystems.Motor;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 
 public class Intake extends SubsystemBase{
@@ -25,6 +26,10 @@ public class Intake extends SubsystemBase{
       
     public void stopIntake() {
         intakeMotor.setSpeed(0);
+    }
+
+    public void setSpeed(double speed) {
+        intakeMotor.setSpeed(speed);
     }
 
 }

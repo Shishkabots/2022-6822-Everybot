@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 public class DriveTrain extends SubsystemBase {
@@ -35,6 +37,7 @@ public class DriveTrain extends SubsystemBase {
    * test
    */
   public void arcadedrive(double xSpeed, double zRotation){
+    SmartDashboard.putNumber("rcw = ", zRotation);
     m_robotDrive.arcadeDrive(xSpeed, zRotation);
   }
   public void tankdrive(double leftSpeed, double rightSpeed) {

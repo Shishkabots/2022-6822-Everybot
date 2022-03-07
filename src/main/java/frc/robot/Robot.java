@@ -28,7 +28,6 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Imu;
 import frc.robot.subsystems.ShishkabotsEncoder;
 import frc.robot.Constants;
-import frc.robot.auto.BallTracker;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.BeamBreakSensor;
@@ -37,23 +36,20 @@ import frc.robot.commands.ArcadeDrive;
 
 
 public class Robot extends TimedRobot {
-  public static Intake m_intake = new Intake(); // m_intake and intake are 2 seperate things
-  public static Imu m_imu = new Imu();
   
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;
-  //private Arm m_arm;
+  private Arm m_arm;
 
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
-  VictorSPX intake = new VictorSPX(6);
+  VictorSPX intake = new VictorSPX(6); //change? DG
 
-  Joystick driverController = new Joystick(0);
+  Joystick m_driverStick = m_robotContainer.getDriverStick();
 
   private final RobotLogger logger = RobotContainer.getLogger();
   private CameraSubsystem m_cam1;
-  private ColorSensor m_colorSensor;
 
   private ShishkabotsEncoder m_encoder;
 
@@ -72,25 +68,22 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     try {
-
       // Log that robot has been initialized
       logger.logInfo("Robot initialized."); 
     
       m_robotContainer = new RobotContainer();
       m_driveTrain = m_robotContainer.getDriveTrain();
-      //m_arm = new Arm();
+      m_arm = new Arm();
     
       //add a thing on the dashboard to turn off auto if needed
       SmartDashboard.putBoolean("Go For Auto", false);
       goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
 
     
-    // Sets Limelight to driver camera, turn off green LEDs.
-    m_cam1 = new CameraSubsystem();
-    m_cam1.setCamToDriverMode();
-    m_cam1.setLedToOff();
-
-    m_colorSensor = new ColorSensor();
+      // Sets Limelight to driver camera, turn off green LEDs.
+      m_cam1 = new CameraSubsystem();
+      m_cam1.setCamToDriverMode();
+      m_cam1.setLedToOff();
 
       m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
       m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
@@ -141,31 +134,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    try {
-      // The code below is from everybot and will be moved out eventually, so no need to put into try-catch right now.
-      // Get time since start of autonomous
-      double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
-      if(goForAuto){
-        //series of timed events making up the flow of auto
-        if(autoTimeElapsed < 3){
-          //spit out the ball for three seconds
-          intake.set(ControlMode.PercentOutput, -1);
-        }else if(autoTimeElapsed < 6){
-          //stop spitting out the ball and drive backwards *slowly* for three seconds
-          intake.set(ControlMode.PercentOutput, 0);
-          m_driveTrain.autonomousInit();
-        }else{
-          //do nothing for the rest of auto
-          intake.set(ControlMode.PercentOutput, 0);
-          m_driveTrain.autonomousEnd();
-        }
-      }
-    } catch (Exception e) {
-        logger.logError("Runtime Exception in autonomousPeriodic " + e);
-        throw e;
-    }
-  }
+  public void autonomousPeriodic() {}
 
   /** This function is called once when teleop is enabled. */
   @Override
@@ -175,22 +144,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     try {
-      if (m_ballTracker.chooseMostConfidentBall() != null) {
-        SmartDashboard.putString("Most confident ball: ", m_ballTracker.chooseMostConfidentBall().toString());
-      }
-      else {
-        SmartDashboard.putString("Most confident ball: ", "No ball located!");
-      }
-
        m_driveMode = m_chooser.getSelected();
        m_robotContainer.setDriveType(m_driveMode);
 
       //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
       //Intake controls
-      if(driverController.getRawButton(5)){
+      if(m_driverStick.getRawButton(5)){
         intake.set(VictorSPXControlMode.PercentOutput, 1);;
       }
-      else if(driverController.getRawButton(7)){
+      else if(m_driverStick.getRawButton(7)){
         intake.set(VictorSPXControlMode.PercentOutput, -1);
       }
       else{

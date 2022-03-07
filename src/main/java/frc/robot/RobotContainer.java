@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import frc.robot.auto.BallTracker;
 import frc.robot.auto.AutoCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 
 /**
@@ -36,11 +38,15 @@ public class RobotContainer {
 
   private Command m_autoCommand;
   private Command m_teleopCommand;
-  private final DriveTrain m_drivetrain = new DriveTrain();
-  private final Joystick m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
-  private final Imu m_imu = new Imu();
-  private final BallTracker m_ballTracker = new BallTracker();
-  private DriveType m_driveType = DriveType.ARCADE_DRIVE;
+  private final DriveTrain m_drivetrain;
+  private final Joystick m_driverStick;
+  private final Imu m_imu;
+  private final BallTracker m_ballTracker;
+  private DriveType m_driveType;
+  private final ColorSensor m_colorSensor;
+  private final Intake m_intake;
+  private final Arm m_arm;
+  private final UltrasonicSensor m_ultrasonicSensor;
   private static RobotLogger logger;
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
@@ -48,10 +54,19 @@ public class RobotContainer {
  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_drivetrain = new DriveTrain();
+    m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
+    m_imu = new Imu();
+    m_ballTracker = new BallTracker();
+    m_driveType = DriveType.ARCADE_DRIVE;
+    m_colorSensor = new ColorSensor();
+    m_intake = new Intake();
+    m_arm = new Arm();
+    m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
     // assign default commands
     m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     
-    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker);
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -66,7 +81,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Removes speed throttling during ArcadeDrive, allows robot to move at max speed.
     new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTTRIGGER).whenHeld(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_FULLSPEED)); 
-    new JoystickButton(m_driverStick, Constants.JOYSTICK_BUTTON_Y).whenHeld(new IntakeBall());
+    //new JoystickButton(m_driverStick, Constants.JOYSTICK_BUTTON_Y).whenHeld(new IntakeBall()); remove? what even is this? DG
+
+    new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTBUMPER).whileHeld(
+      new StartEndCommand(
+        () -> m_intake.setSpeed(SmartDashboard.getNumber("Set Intake Percent", 0.0)),
+        () -> m_intake.setSpeed(0), m_intake));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -149,5 +169,13 @@ public class RobotContainer {
     }
 
     checkDrivetype();
+  }
+
+  public Joystick getDriverStick() {
+    return m_driverStick;
+  }
+
+  public Arm getArm() {
+    return m_arm;
   }
  } 
