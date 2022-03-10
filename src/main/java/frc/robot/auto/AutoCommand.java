@@ -49,7 +49,7 @@ public class AutoCommand extends CommandBase {
     private AutonomousState m_autonomousState;
 
     private enum AutonomousState {
-      SCORE_PRELOADED_BALL, GO_TO_BALL, SCORE_BALL
+      SCORE_PRELOADED_BALL, GO_TO_BALL, SCORE_BALL, DUMB_AUTO
     }
 
   private final RobotLogger logger = RobotContainer.getLogger();
@@ -147,6 +147,30 @@ public class AutoCommand extends CommandBase {
           m_autonomousState = AutonomousState.GO_TO_BALL;
         }
         break;
+      case DUMB_AUTO:
+        // This only works if the robot is placed directly aligned with the ball. It will pick up other ball and then turn around and score both.
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "DUMB_AUTO");
+        // Goes straight until the ball is picked up.
+        if (isBallPickedUp() == false) {
+          pickUpBall();
+          goStraight();
+          if (isBallPickedUp()) {
+            stopMoving();
+          }
+        }
+
+        if (isBallPickedUp()) {
+          //add stop moving in here to make it stop going forward? Don't know - DG
+          PIDHubTurningControl();
+          turnToHub();
+          if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
+            goStraight();
+          }
+          else {
+            scoreBall();
+          }
+          
+        }
     }
   }
 
