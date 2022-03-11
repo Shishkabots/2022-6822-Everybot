@@ -54,6 +54,7 @@ public class RobotContainer {
  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    AutoCommand.initiateAutoCommandChooser();
     m_drivetrain = new DriveTrain();
     m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
     m_imu = new Imu();
