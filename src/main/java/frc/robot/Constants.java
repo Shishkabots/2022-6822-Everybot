@@ -165,4 +165,7 @@ public final class Constants {
     public final static String VISION_SCORE_FIRST_STRING = "Vision - score ball first";
     public final static String VISION_SCORE_BOTH_BALLS_STRING = "Vision - score both balls together";
     public final static String PRIMITIVE_AUTO_STRING = "Blind Mode";
+
+    public final static String BLUE_COLOR_BALL_STRING = "Blue";
+    public final static String RED_COLOR_BALL_STRING = "Red";
 }
