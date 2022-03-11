@@ -122,7 +122,7 @@ public class AutoCommand extends CommandBase {
           putArmUp();
         }
         if (armIsUp) {
-          while (isBallPickedUp()) {
+          while (isBallHeldInIntake()) {
             scoreBall();
           }
           // Once the ball is dropped, set state to go to ball.
@@ -139,7 +139,7 @@ public class AutoCommand extends CommandBase {
           goStraight();
           pickUpBall();
         }
-        if (isBallPickedUp()) {
+        if (isBallHeldInIntake()) {
           double timeWhenEnteredThisLoop = Timer.getFPGATimestamp();
           while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
             goStraight();
@@ -149,7 +149,7 @@ public class AutoCommand extends CommandBase {
         break;
       case GO_TO_HUB:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
-        if (isBallPickedUp()) {
+        if (isBallHeldInIntake()) {
           PIDHubTurningControl();
           turnToHub();
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
@@ -169,15 +169,15 @@ public class AutoCommand extends CommandBase {
         // This only works if the robot is placed directly aligned with the ball. It will pick up other ball and then turn around and score both.
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "DUMB_AUTO");
         // Goes straight until the ball is picked up.
-        if (isBallPickedUp() == false) {
+        if (isBallHeldInIntake() == false) {
           pickUpBall();
           goStraight();
-          if (isBallPickedUp()) {
+          if (isBallHeldInIntake()) {
             stopMoving();
           }
         }
 
-        if (isBallPickedUp()) {
+        if (isBallHeldInIntake()) {
           //add stop moving in here to make it stop going forward? Don't know - DG
           PIDHubTurningControl();
           turnToHub();
@@ -371,7 +371,7 @@ public class AutoCommand extends CommandBase {
    * TO BE TESTED.
    * @return
    */
-  public boolean isBallPickedUp() {
+  public boolean isBallHeldInIntake() {
     return (m_colorSensor.checkColor().equals(""));
   }
 
