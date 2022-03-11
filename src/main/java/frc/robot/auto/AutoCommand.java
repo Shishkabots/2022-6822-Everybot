@@ -16,11 +16,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.logging.RobotLogger;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Imu;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.auto.BallTracker;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.*;
@@ -47,9 +45,10 @@ public class AutoCommand extends CommandBase {
     private boolean armIsUp;
 
     private AutonomousState m_autonomousState;
+    private static SendableChooser<String> autonomousModeChooser;
 
     private enum AutonomousState {
-      SCORE_PRELOADED_BALL, GO_TO_BALL, SCORE_BALL
+      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE
     }
 
   private final RobotLogger logger = RobotContainer.getLogger();
@@ -66,6 +65,21 @@ public class AutoCommand extends CommandBase {
     m_arm = arm;
     m_ultrasonicSensor = ultrasonicSensor;
     m_colorSensor = colorSensor;
+    // Arm up when match starts
+    armIsUp = true;
+    // Default autonomous mode
+    m_autonomousState = AutonomousState.SCORE_BALL;
+
+    if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_FIRST_STRING)) {
+      m_autonomousState = AutonomousState.SCORE_BALL;
+    }
+    else if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_BOTH_BALLS_STRING)) {
+      m_autonomousState = AutonomousState.GO_TO_BALL;
+    }
+    else if (autonomousModeChooser.getSelected().equals(Constants.PRIMITIVE_AUTO_STRING)) {
+      m_autonomousState = AutonomousState.PRIMITIVE_AUTO;
+    }
+
     addRequirements(m_pigeon, m_driveTrain);
   }
 
@@ -102,14 +116,18 @@ public class AutoCommand extends CommandBase {
 
   public void checkAutonomousState() {
     switch (m_autonomousState) {
-      case SCORE_PRELOADED_BALL:
+      case SCORE_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_PRELOADED_BALL");
-        armIsUp = true;
-        while (isBallPickedUp()) {
-          scoreBall();
+        if (armIsUp == false) {
+          putArmUp();
         }
-        // Once the preloaded ball is dropped, set state to go to ball.
-        m_autonomousState = AutonomousState.GO_TO_BALL;
+        if (armIsUp) {
+          while (isBallHeldInIntake()) {
+            scoreBall();
+          }
+          // Once the ball is dropped, set state to go to ball.
+          m_autonomousState = AutonomousState.GO_TO_BALL;
+        }
         break;
       case GO_TO_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
@@ -121,7 +139,7 @@ public class AutoCommand extends CommandBase {
           goStraight();
           pickUpBall();
         }
-        if (isBallPickedUp()) {
+        if (isBallHeldInIntake()) {
           double timeWhenEnteredThisLoop = Timer.getFPGATimestamp();
           while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
             goStraight();
@@ -129,9 +147,9 @@ public class AutoCommand extends CommandBase {
           m_autonomousState = AutonomousState.SCORE_BALL;
         }
         break;
-      case SCORE_BALL:
+      case GO_TO_HUB:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
-        if (isBallPickedUp()) {
+        if (isBallHeldInIntake()) {
           PIDHubTurningControl();
           turnToHub();
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
@@ -147,6 +165,32 @@ public class AutoCommand extends CommandBase {
           m_autonomousState = AutonomousState.GO_TO_BALL;
         }
         break;
+      case PRIMITIVE_AUTO:
+        // This only works if the robot is placed directly aligned with the ball. It will pick up other ball and then turn around and score both.
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "DUMB_AUTO");
+        // Goes straight until the ball is picked up.
+        if (isBallHeldInIntake() == false) {
+          pickUpBall();
+          goStraight();
+          if (isBallHeldInIntake()) {
+            stopMoving();
+          }
+        }
+
+        if (isBallHeldInIntake()) {
+          //add stop moving in here to make it stop going forward? Don't know - DG
+          PIDHubTurningControl();
+          turnToHub();
+          if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
+            goStraight();
+          }
+          else {
+            //Moves robot out of the way of the other team 
+            goBackwardsSlowlyForThreeSeconds();
+          }
+        }
+      case IDLE:
+        stopMoving();
     }
   }
 
@@ -273,6 +317,19 @@ public class AutoCommand extends CommandBase {
     }
   }
 
+  public void goBackwardsSlowlyForThreeSeconds() {
+    try {
+      double lastCheckedTime = Timer.getFPGATimestamp();
+      while (Timer.getFPGATimestamp() < lastCheckedTime + 3) {
+        m_driveTrain.arcadedrive(-1 * Constants.GO_STRAIGHT_SPEED, 0);
+      }
+      m_autonomousState = AutonomousState.IDLE;
+    } catch (Exception e) {
+      logger.logError("Runtime Exception while trying to go backwards " + e);
+      throw e;
+    }
+  }
+
   // Stops motion of robot
   public void stopMoving() {
     try {
@@ -314,7 +371,13 @@ public class AutoCommand extends CommandBase {
    * TO BE TESTED.
    * @return
    */
-  public boolean isBallPickedUp() {
+  public boolean isBallHeldInIntake() {
     return (m_colorSensor.checkColor().equals(""));
+  }
+
+  public static void initiateAutoCommandChooser() {
+    autonomousModeChooser = new SendableChooser<String>();
+    autonomousModeChooser.addOption(Constants.VISION_SCORE_FIRST_STRING, AutonomousState.SCORE_BALL.name());
+    autonomousModeChooser.addOption(Constants.PRIMITIVE_AUTO_STRING, AutonomousState.PRIMITIVE_AUTO.name());
   }
 }

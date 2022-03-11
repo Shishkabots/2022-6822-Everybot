@@ -161,4 +161,8 @@ public final class Constants {
     public final static String AUTOCOMMAND_KEY = "Autocommand state";
     public final static double TURN_SPEED = 0.3;
     public final static double GO_STRAIGHT_SPEED = 0.3;
+
+    public final static String VISION_SCORE_FIRST_STRING = "Vision - score ball first";
+    public final static String VISION_SCORE_BOTH_BALLS_STRING = "Vision - score both balls together";
+    public final static String PRIMITIVE_AUTO_STRING = "Blind Mode";
 }
