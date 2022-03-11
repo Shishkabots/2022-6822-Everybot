@@ -48,7 +48,7 @@ public class AutoCommand extends CommandBase {
     private static SendableChooser<String> autonomousModeChooser;
 
     private enum AutonomousState {
-      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO
+      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE
     }
 
   private final RobotLogger logger = RobotContainer.getLogger();
@@ -185,9 +185,12 @@ public class AutoCommand extends CommandBase {
             goStraight();
           }
           else {
-            m_autonomousState = AutonomousState.SCORE_BALL;
+            //Moves robot out of the way of the other team 
+            goBackwardsSlowlyForThreeSeconds();
           }
         }
+      case IDLE:
+        stopMoving();
     }
   }
 
@@ -310,6 +313,19 @@ public class AutoCommand extends CommandBase {
       m_driveTrain.arcadedrive(Constants.GO_STRAIGHT_SPEED, 0);
     } catch (Exception e) {
       logger.logError("Runtime Exception while trying to go straight " + e);
+      throw e;
+    }
+  }
+
+  public void goBackwardsSlowlyForThreeSeconds() {
+    try {
+      double lastCheckedTime = Timer.getFPGATimestamp();
+      while (Timer.getFPGATimestamp() < lastCheckedTime + 3) {
+        m_driveTrain.arcadedrive(-1 * Constants.GO_STRAIGHT_SPEED, 0);
+      }
+      m_autonomousState = AutonomousState.IDLE;
+    } catch (Exception e) {
+      logger.logError("Runtime Exception while trying to go backwards " + e);
       throw e;
     }
   }
