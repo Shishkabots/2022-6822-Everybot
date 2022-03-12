@@ -16,23 +16,14 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.logging.RobotLogger;
-import frc.robot.subsystems.ColorSensor;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Imu;
 import frc.robot.subsystems.ShishkabotsEncoder;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.BeamBreakSensor;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.commands.ArcadeDrive;
 
 
 public class Robot extends TimedRobot {
@@ -40,16 +31,14 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveTrain m_driveTrain;
   private Arm m_arm;
+  private VictorSPX m_intake;
 
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
-  VictorSPX intake = new VictorSPX(6); //change? DG
-
   Joystick m_driverStick = m_robotContainer.getDriverStick();
 
   private final RobotLogger logger = RobotContainer.getLogger();
-  private CameraSubsystem m_cam1;
 
   private ShishkabotsEncoder m_encoder;
 
@@ -57,7 +46,7 @@ public class Robot extends TimedRobot {
   private boolean goForAuto = false;
 
   private String m_driveMode;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_driveModeChooser = new SendableChooser<>();
   
   private BeamBreakSensor m_beamBreakSensor;
 
@@ -73,22 +62,17 @@ public class Robot extends TimedRobot {
     
       m_robotContainer = new RobotContainer();
       m_driveTrain = m_robotContainer.getDriveTrain();
-      m_arm = new Arm();
-    
-      //add a thing on the dashboard to turn off auto if needed
+      m_arm = m_robotContainer.getArm();
+      m_intake = new VictorSPX(6); //change? DG
+
+      // Add a thing on the dashboard to turn off auto if needed
       SmartDashboard.putBoolean("Go For Auto", false);
       goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
 
-    
-      // Sets Limelight to driver camera, turn off green LEDs.
-      m_cam1 = new CameraSubsystem();
-      m_cam1.setCamToDriverMode();
-      m_cam1.setLedToOff();
-
-      m_chooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
-      m_chooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
-      m_chooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
-      SmartDashboard.putData("Drive Choices: ", m_chooser);
+      m_driveModeChooser.setDefaultOption(Constants.ARCADE_DRIVE, Constants.ARCADE_DRIVE);
+      m_driveModeChooser.addOption(Constants.TANK_DRIVE, Constants.TANK_DRIVE);
+      m_driveModeChooser.addOption(Constants.CURVATURE_DRIVE, Constants.CURVATURE_DRIVE);
+      SmartDashboard.putData("Drive Choices: ", m_driveModeChooser);
 
       //Initializes the encoders. 
       m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
@@ -120,17 +104,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-    try {
-      // get a time for auton start to do events based on time later
-      autoStart = Timer.getFPGATimestamp();
-      // check dashboard icon to ensure good to do auto
-      goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
-    } catch (Exception e) {
-      logger.logError("Runtime exception in autonomousInit " + e);
-      throw e;
-    }
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -144,19 +118,19 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     try {
-       m_driveMode = m_chooser.getSelected();
+       m_driveMode = m_driveModeChooser.getSelected();
        m_robotContainer.setDriveType(m_driveMode);
 
       //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
       //Intake controls
-      if(m_driverStick.getRawButton(5)){
-        intake.set(VictorSPXControlMode.PercentOutput, 1);;
+      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER)){
+        m_intake.set(VictorSPXControlMode.PercentOutput, 1);;
       }
-      else if(m_driverStick.getRawButton(7)){
-        intake.set(VictorSPXControlMode.PercentOutput, -1);
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
+        m_intake.set(VictorSPXControlMode.PercentOutput, -1);
       }
       else{
-        intake.set(VictorSPXControlMode.PercentOutput, 0);
+        m_intake.set(VictorSPXControlMode.PercentOutput, 0);
       }
 
       // Will be uncommented when arm is ready.
@@ -181,6 +155,6 @@ public class Robot extends TimedRobot {
     //On disable turn off everything
     //done to solve issue with motors "remembering" previous setpoints after reenable
     //m_arm.disabledInit();
-    intake.set(ControlMode.PercentOutput, 0);
+    m_intake.set(ControlMode.PercentOutput, 0);
   }
 }
