@@ -47,6 +47,7 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Arm m_arm;
   private final UltrasonicSensor m_ultrasonicSensor;
+  private BeamBreakSensor m_beamBreakSensor;
   private static RobotLogger logger;
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
@@ -55,6 +56,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     AutoCommand.initiateAutoCommandChooser();
+    AutoCommand.initiateTeamColorChooser();
     m_drivetrain = new DriveTrain();
     m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
     m_imu = new Imu();
@@ -64,10 +66,11 @@ public class RobotContainer {
     m_intake = new Intake();
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
+    m_beamBreakSensor = new BeamBreakSensor();
     // assign default commands
     m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     
-    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor);
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
 
     // Configure the button bindings
     configureButtonBindings();

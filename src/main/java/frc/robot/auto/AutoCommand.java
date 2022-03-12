@@ -35,6 +35,7 @@ public class AutoCommand extends CommandBase {
     private Intake m_intake;
     private Arm m_arm;
     private UltrasonicSensor m_ultrasonicSensor;
+    private BeamBreakSensor m_beamBreakSensor;
 
     private double kP = 0.3, kI = 0.3, kD = 1;
     private double derivative, previous_error, error;
@@ -46,6 +47,7 @@ public class AutoCommand extends CommandBase {
 
     private AutonomousState m_autonomousState;
     private static SendableChooser<String> autonomousModeChooser;
+    private static SendableChooser<String> teamColorChooser;
 
     private enum AutonomousState {
       SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE
@@ -58,13 +60,14 @@ public class AutoCommand extends CommandBase {
    *
    * @param  drivetrain The drivetrain used by this command.
    */
-  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor) {
+  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor, BeamBreakSensor beamBreakSensor) {
     m_pigeon = imu;
     m_driveTrain = driveTrain;
     m_ballTracker = ballTracker;
     m_arm = arm;
     m_ultrasonicSensor = ultrasonicSensor;
     m_colorSensor = colorSensor;
+    m_beamBreakSensor = beamBreakSensor;
     // Arm up when match starts
     armIsUp = true;
     // Default autonomous mode
@@ -141,8 +144,12 @@ public class AutoCommand extends CommandBase {
         }
         if (isBallHeldInIntake()) {
           double timeWhenEnteredThisLoop = Timer.getFPGATimestamp();
-          while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
-            goStraight();
+
+          // Based on the ball color, will either spit out the ball immediately (wrong color) or will go back to hub
+          if (teamColorChooser.getSelected().equals(m_colorSensor.checkColor())) {
+            while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
+              goStraight();
+            }
           }
           m_autonomousState = AutonomousState.SCORE_BALL;
         }
@@ -176,7 +183,6 @@ public class AutoCommand extends CommandBase {
             stopMoving();
           }
         }
-
         if (isBallHeldInIntake()) {
           //add stop moving in here to make it stop going forward? Don't know - DG
           PIDHubTurningControl();
@@ -372,12 +378,22 @@ public class AutoCommand extends CommandBase {
    * @return
    */
   public boolean isBallHeldInIntake() {
-    return (m_colorSensor.checkColor().equals(""));
+    return (m_beamBreakSensor.isBeamIntact() == false);
+  }
+  
+  public String getColor() {
+    return m_colorSensor.checkColor();
   }
 
   public static void initiateAutoCommandChooser() {
     autonomousModeChooser = new SendableChooser<String>();
     autonomousModeChooser.addOption(Constants.VISION_SCORE_FIRST_STRING, AutonomousState.SCORE_BALL.name());
     autonomousModeChooser.addOption(Constants.PRIMITIVE_AUTO_STRING, AutonomousState.PRIMITIVE_AUTO.name());
+  }
+
+  public static void initiateTeamColorChooser() {
+    teamColorChooser = new SendableChooser<String>();
+    teamColorChooser.addOption(Constants.BLUE_COLOR_BALL_STRING, Constants.BLUE_COLOR_BALL_STRING);
+    teamColorChooser.addOption(Constants.RED_COLOR_BALL_STRING, Constants.BLUE_COLOR_BALL_STRING);
   }
 }

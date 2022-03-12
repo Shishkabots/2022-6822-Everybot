@@ -18,7 +18,7 @@ public class BeamBreakSensor {
      * Returns true if beam is uninterrupted, false if beam is obstructed.
      * @return
      */
-    public boolean getValue() {
+    public boolean isBeamIntact() {
         return m_beamBreakSensor.get();
     }
 
@@ -26,6 +26,6 @@ public class BeamBreakSensor {
      *  Puts value on SmartDashboard. (true/false)
      */
     public void putValueOnSmartDashboard() {
-        SmartDashboard.putBoolean(Constants.IS_BEAM_INTERRUPTED, getValue());
+        SmartDashboard.putBoolean(Constants.IS_BEAM_INTERRUPTED, isBeamIntact());
     }
 }
