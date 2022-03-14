@@ -69,7 +69,6 @@ public class RobotContainer {
     m_beamBreakSensor = new BeamBreakSensor();
     // assign default commands
     m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
-    
     m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
 
     // Configure the button bindings

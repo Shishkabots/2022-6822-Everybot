@@ -4,25 +4,15 @@
 
 package frc.robot.auto;
 
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.ColorSensor;
-
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import frc.robot.logging.RobotLogger;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Imu;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.UltrasonicSensor;
 
 /** An example command that uses an example subsystem. */
 public class AutoCommand extends CommandBase {
@@ -70,8 +60,6 @@ public class AutoCommand extends CommandBase {
     m_beamBreakSensor = beamBreakSensor;
     // Arm up when match starts
     armIsUp = true;
-    // Default autonomous mode
-    m_autonomousState = AutonomousState.SCORE_BALL;
 
     if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_FIRST_STRING)) {
       m_autonomousState = AutonomousState.SCORE_BALL;
@@ -81,6 +69,11 @@ public class AutoCommand extends CommandBase {
     }
     else if (autonomousModeChooser.getSelected().equals(Constants.PRIMITIVE_AUTO_STRING)) {
       m_autonomousState = AutonomousState.PRIMITIVE_AUTO;
+    }
+    else {
+      // Default autonomous mode
+      m_autonomousState = AutonomousState.SCORE_BALL;
+
     }
 
     addRequirements(m_pigeon, m_driveTrain);
@@ -125,15 +118,18 @@ public class AutoCommand extends CommandBase {
           putArmUp();
         }
         if (armIsUp) {
-          while (isBallHeldInIntake()) {
+          if (isBallHeldInIntake()) {
             scoreBall();
           }
-          // Once the ball is dropped, set state to go to ball.
-          m_autonomousState = AutonomousState.GO_TO_BALL;
+          else {
+            // Once the ball is dropped, set state to go to ball.
+            m_autonomousState = AutonomousState.GO_TO_BALL;
+          }
         }
         break;
       case GO_TO_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
+        // TODO - make sure arm is down before looking for ball, check for distance between arm to hub to make sure its not too close
         chooseMostConfidentBall();
         // DG - maybe remove this below line? Might induce unnecessary stopping of robot when the PID would just have it turn back to find the ball or when ball falls out of frmae when too near
         if (mostConfidentBallCoordinates != null) {
@@ -143,29 +139,27 @@ public class AutoCommand extends CommandBase {
           pickUpBall();
         }
         if (isBallHeldInIntake()) {
-          double timeWhenEnteredThisLoop = Timer.getFPGATimestamp();
-
           // Based on the ball color, will either spit out the ball immediately (wrong color) or will go back to hub
           if (teamColorChooser.getSelected().equals(m_colorSensor.checkColor())) {
-            while (Timer.getFPGATimestamp() < timeWhenEnteredThisLoop + 0.5) {
-              goStraight();
-            }
+            m_autonomousState = AutonomousState.GO_TO_HUB;
           }
-          m_autonomousState = AutonomousState.SCORE_BALL;
+          else {
+            m_autonomousState = AutonomousState.SCORE_BALL;
+          }
         }
         break;
       case GO_TO_HUB:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
         if (isBallHeldInIntake()) {
           PIDHubTurningControl();
-          turnToHub();
+          turnToHub(); // TODO udpate this method to use machine learning
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
             goStraight();
           }
           else {
             stopMoving();
             scoreBall();
-            m_autonomousState = AutonomousState.GO_TO_BALL;
+            // After this loop ends, once the ball is no longer detected inside the intake the else statement to switch state will run.
           }
         }
         else {
@@ -174,29 +168,20 @@ public class AutoCommand extends CommandBase {
         break;
       case PRIMITIVE_AUTO:
         // This only works if the robot is placed directly aligned with the ball. It will pick up other ball and then turn around and score both.
-        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "DUMB_AUTO");
-        // Goes straight until the ball is picked up.
-        if (isBallHeldInIntake() == false) {
-          pickUpBall();
-          goStraight();
-          if (isBallHeldInIntake()) {
-            stopMoving();
-          }
-        }
+        SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "PRIMITIVE_AUTO");
+
         if (isBallHeldInIntake()) {
-          //add stop moving in here to make it stop going forward? Don't know - DG
-          PIDHubTurningControl();
-          turnToHub();
-          if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
-            goStraight();
-          }
-          else {
-            //Moves robot out of the way of the other team 
-            goBackwardsSlowlyForThreeSeconds();
-          }
+          scoreBall();
         }
+        else {
+            // Moves robot out of the way of the other team (backwards slowly for 3 seconds)
+            goBackwardsSlowlyForThreeSeconds();
+            m_autonomousState = AutonomousState.IDLE;
+        }
+        break;
       case IDLE:
         stopMoving();
+        break;
     }
   }
 
@@ -329,7 +314,6 @@ public class AutoCommand extends CommandBase {
       while (Timer.getFPGATimestamp() < lastCheckedTime + 3) {
         m_driveTrain.arcadedrive(-1 * Constants.GO_STRAIGHT_SPEED, 0);
       }
-      m_autonomousState = AutonomousState.IDLE;
     } catch (Exception e) {
       logger.logError("Runtime Exception while trying to go backwards " + e);
       throw e;
@@ -373,7 +357,7 @@ public class AutoCommand extends CommandBase {
     }
   }
   /**
-   * Returns a value based on if the colorsensor detects a color or not. If it doesn't, it means there is no ball present.
+   * Returns a value based on if the colorsensor detects a color or not. If true, ball present. If false, it means there is no ball present.
    * TO BE TESTED.
    * @return
    */
