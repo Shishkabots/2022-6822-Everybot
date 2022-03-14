@@ -66,6 +66,7 @@ public class Arm extends SubsystemBase {
    * Arm motor stops when robot disabled.
    */
   public void disabledInit() {
+    
     m_armMotor.setSpeed(0);
   }
 
@@ -81,5 +82,9 @@ public class Arm extends SubsystemBase {
 
   public void setSpeed(double speed) {
     m_armMotor.set(speed);
+  }
+
+  public void setArmUpStatus(boolean status) {
+    m_armUp = status;
   }
 }

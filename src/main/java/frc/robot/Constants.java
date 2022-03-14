@@ -33,7 +33,7 @@ public final class Constants {
     // Here onwards are hypothetical values for probable CAN IDs for these motors.
     public final static int SHOOTER_LEAD_MOTOR = 5;
     public final static int SHOOTER_FOLLOWER_MOTOR = 6;
-    public final static int INTAKE_LEAD_MOTOR = 7;
+    public final static int INTAKE_LEAD_MOTOR = 6;
     public final static int INTAKE_FOLLOWER_MOTOR = 8;
     public final static int ELEVATOR_MOTOR = 9;
 

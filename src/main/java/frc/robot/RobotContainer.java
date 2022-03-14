@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.robot.commands.*;
@@ -15,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.function.BooleanSupplier;
 import frc.robot.logging.RobotLogger;
 import java.util.logging.Level;
+
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import java.io.IOException;
 import frc.robot.auto.BallTracker;
 import frc.robot.auto.AutoCommand;
@@ -49,6 +53,7 @@ public class RobotContainer {
   private final UltrasonicSensor m_ultrasonicSensor;
   private BeamBreakSensor m_beamBreakSensor;
   private static RobotLogger logger;
+  private boolean joystickturningbool = true;
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
   private final BooleanSupplier m_isQuickTurn = () -> false; 
@@ -63,12 +68,18 @@ public class RobotContainer {
     m_ballTracker = new BallTracker();
     m_driveType = DriveType.ARCADE_DRIVE;
     m_colorSensor = new ColorSensor();
-    m_intake = new Intake();
+    m_intake = new Intake(Constants.INTAKE_LEAD_MOTOR);
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
     m_beamBreakSensor = new BeamBreakSensor();
     // assign default commands
-    m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+    if (joystickturningbool) {
+      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+    }
+    else {
+      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+    }    
+    
     m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
 
     // Configure the button bindings
@@ -83,6 +94,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Removes speed throttling during ArcadeDrive, allows robot to move at max speed.
+    
     new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTTRIGGER).whenHeld(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_FULLSPEED)); 
     //new JoystickButton(m_driverStick, Constants.JOYSTICK_BUTTON_Y).whenHeld(new IntakeBall()); remove? what even is this? DG
 
@@ -143,8 +155,12 @@ public class RobotContainer {
    public void checkDrivetype() {
     switch(m_driveType) {
       case ARCADE_DRIVE:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
-        break;
+      if (joystickturningbool) {
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      }
+      else {
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      }        break;
       case TANK_DRIVE:
         m_drivetrain.setDefaultCommand(new TankDrive(() -> (m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y), m_drivetrain));
         break;
@@ -152,8 +168,12 @@ public class RobotContainer {
         m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_isQuickTurn, m_drivetrain));
         break;
       default:
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED)); 
-    }
+      if (joystickturningbool) {
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      }
+      else {
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      }    }
   }
 
   /**
@@ -180,5 +200,9 @@ public class RobotContainer {
 
   public Arm getArm() {
     return m_arm;
+  }
+
+  public Intake getIntake() {
+    return m_intake;
   }
  } 
