@@ -130,6 +130,7 @@ public class AutoCommand extends CommandBase {
       case GO_TO_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
         // TODO - make sure arm is down before looking for ball, check for distance between arm to hub to make sure its not too close
+        
         chooseMostConfidentBall();
         // DG - maybe remove this below line? Might induce unnecessary stopping of robot when the PID would just have it turn back to find the ball or when ball falls out of frmae when too near
         if (mostConfidentBallCoordinates != null) {
@@ -338,6 +339,10 @@ public class AutoCommand extends CommandBase {
     }
     m_arm.setSpeed(-Constants.ARM_HOLD_DOWN);
     armIsUp = false;
+
+    if (isBallHeldInIntake()== false) {
+      m_intake.intakeBall();
+    }
   }
 
   public void putArmUp() {
