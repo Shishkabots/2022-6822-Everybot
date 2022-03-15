@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.Arm;
@@ -37,6 +38,7 @@ public class Robot extends TimedRobot {
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
   Joystick m_driverStick = m_robotContainer.getDriverStick();
+  XboxController m_intakeStick = m_robotContainer.getIntakeStick();
 
   private final RobotLogger logger = RobotContainer.getLogger();
 
@@ -123,10 +125,10 @@ public class Robot extends TimedRobot {
 
       //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
       //Intake controls
-      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER)){
+      if(m_intakeStick.getLeftBumper()){
         m_intake.set(VictorSPXControlMode.PercentOutput, 1);;
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
+      else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
         m_intake.set(VictorSPXControlMode.PercentOutput, -1);
       }
       else{

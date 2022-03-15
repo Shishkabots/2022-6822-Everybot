@@ -40,6 +40,7 @@ public final class Constants {
     public final static boolean IS_INVERTED = true;
 
     public final static int DRIVER_STICK_PORT = 0;
+    public final static int INTAKE_STICK_PORT = 1;
 
     // Joystick IDs    
     public final static int JOYSTICK_LEFT_X = 0;
