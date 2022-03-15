@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.logging.RobotLogger;
 import frc.robot.subsystems.Arm;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
   Joystick m_driverStick;
+  XboxController m_intakeStick;
 
   private final RobotLogger logger = RobotContainer.getLogger();
 
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
     
       m_robotContainer = new RobotContainer();
       m_driverStick = m_robotContainer.getDriverStick();
+      m_intakeStick = m_robotContainer.getIntakeStick();
       m_driveTrain = m_robotContainer.getDriveTrain();
       m_arm = m_robotContainer.getArm();
       m_intake = m_robotContainer.getIntake(); //change? DG
@@ -125,10 +128,10 @@ public class Robot extends TimedRobot {
        m_robotContainer.setDriveType("Arcade Drive");
 
       //Intake controls
-      if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
-        m_intake.setSpeed(1);
+      if(m_intakeStick.getLeftBumper()){
+        m_intake.setSpeed(1);;
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B){
+      else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
         m_intake.setSpeed(-1);
       }
       else{
