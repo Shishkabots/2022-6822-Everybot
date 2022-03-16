@@ -33,7 +33,7 @@ public final class Constants {
     // Here onwards are hypothetical values for probable CAN IDs for these motors.
     public final static int SHOOTER_LEAD_MOTOR = 5;
     public final static int SHOOTER_FOLLOWER_MOTOR = 6;
-    public final static int INTAKE_LEAD_MOTOR = 6;
+    public final static int INTAKE_LEAD_MOTOR = 5;
     public final static int INTAKE_FOLLOWER_MOTOR = 8;
     public final static int ELEVATOR_MOTOR = 9;
 
@@ -60,7 +60,7 @@ public final class Constants {
 
     // Speed sensitivity
     public final static double JOYSTICK_FULLSPEED = 1.0;
-    public final static double JOYSTICK_THROTTLESPEED = 0.5;
+    public final static double JOYSTICK_THROTTLESPEED = 1;
 
     // Retention time in hours for logs on the RoboRIO target
     public final static double LOG_EXPIRATION_IN_HRS = 48;
@@ -114,9 +114,10 @@ public final class Constants {
      */
     public final static double ARM_HOLD_UP = 0.08;
     public final static double ARM_HOLD_DOWN = 0.13;
-    public final static double ARM_TRAVEL = 0.5;
-    public final static double ARM_TIME_UP = 0.5;
-    public final static double ARM_TIME_DOWN = 0.35;
+    public final static double ARM_TRAVEL_UP = 0.4;
+    public final static double ARM_TRAVEL_DOWN = 0;
+    public final static double ARM_TIME_UP = 1.1;
+    public final static double ARM_TIME_DOWN = 0.7;
     public final static boolean BURST_MODE = false;
     /**
      * Intake subsystem constants
@@ -136,7 +137,7 @@ public final class Constants {
      * BeamBreakSensor constants.
      * BEAM_BREAK_SENSOR_CHANNEL is a PLACEHOLDER, until we figure out true channel.
      */
-    public final static int BEAM_BREAK_SENSOR_CHANNEL = 1;
+    public final static int BEAM_BREAK_SENSOR_CHANNEL = 5;
     public final static String IS_BEAM_INTERRUPTED = "Is beam interrupted?";
 
     /**
@@ -148,6 +149,7 @@ public final class Constants {
     public final static double ULTRASONIC_TO_IN_CONVERSION = 0.0492;
 
 
+    
     public final static String DIRECTION_KEY = "Direction: ";
     public final static int CAMERA_WIDTH_IN_PIXELS_OVER_TWO = 320;
 
