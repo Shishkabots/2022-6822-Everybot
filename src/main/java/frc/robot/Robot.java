@@ -121,15 +121,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     try {
-       //m_driveMode = m_driveModeChooser.getSelected();
-       //m_robotContainer.setDriveType("Arcade Drive");
+       m_driveMode = m_driveModeChooser.getSelected();
+       m_robotContainer.setDriveType("Arcade Drive");
 
-      //m_driveTrain.teleopPeriodic(-m_driverStick.getRawAxis(1), -m_driverStick.getRawAxis(2));
       //Intake controls
       if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
         m_intake.setSpeed(1);
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B){
         m_intake.setSpeed(-1);
       }
       else{
@@ -139,11 +138,11 @@ public class Robot extends TimedRobot {
       // Will be uncommented when arm is ready.
       m_arm.commonPeriodic();
   
-      if(m_driverStick.getRawButtonPressed(6) && !m_arm.getArmUpStatus()){
+      if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTBUMPER) && !m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(true);
       }
-      else if(m_driverStick.getRawButtonPressed(8) && m_arm.getArmUpStatus()){
+      else if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTTRIGGER) && m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(false);
       } 

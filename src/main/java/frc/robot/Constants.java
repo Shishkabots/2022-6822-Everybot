@@ -31,11 +31,8 @@ public final class Constants {
     public final static String TANK_DRIVE = "Tank Drive";
     public final static String CURVATURE_DRIVE = "Curvature Drive";
     // Here onwards are hypothetical values for probable CAN IDs for these motors.
-    public final static int SHOOTER_LEAD_MOTOR = 5;
-    public final static int SHOOTER_FOLLOWER_MOTOR = 6;
+    public final static int ARM_MOTOR = 6;
     public final static int INTAKE_LEAD_MOTOR = 5;
-    public final static int INTAKE_FOLLOWER_MOTOR = 8;
-    public final static int ELEVATOR_MOTOR = 9;
 
     public final static boolean IS_INVERTED = true;
 

@@ -19,7 +19,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    m_armMotor = new Motor(6, MotorType.kBrushless);
+    m_armMotor = new Motor(Constants.ARM_MOTOR, MotorType.kBrushless);
     m_armMotor.setInverted(false);
     m_armMotor.setIdleMode(true);
     m_armMotor.burnFlash();
