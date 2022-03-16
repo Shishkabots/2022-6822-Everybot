@@ -60,6 +60,8 @@ public class AutoCommand extends CommandBase {
     m_beamBreakSensor = beamBreakSensor;
     // Arm up when match starts
     armIsUp = true;
+    autonomousModeChooser.setDefaultOption("Auto Mode", Constants.VISION_SCORE_FIRST_STRING);
+    teamColorChooser.setDefaultOption("Team Color", "blue");
 
     if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_FIRST_STRING)) {
       m_autonomousState = AutonomousState.SCORE_BALL;
@@ -73,7 +75,6 @@ public class AutoCommand extends CommandBase {
     else {
       // Default autonomous mode
       m_autonomousState = AutonomousState.SCORE_BALL;
-
     }
 
     addRequirements(m_pigeon, m_driveTrain);
