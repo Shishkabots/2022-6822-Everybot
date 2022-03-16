@@ -336,7 +336,7 @@ public class AutoCommand extends CommandBase {
     double timeAtWhichProcessStarts = Timer.getFPGATimestamp();
     // If the timer since when the process starts is less than desired time (from everybot code) lower arm. ArmIsUp should be true too.
     while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_UP && armIsUp == true) {
-      m_arm.setSpeed(-Constants.ARM_TRAVEL);
+      m_arm.setSpeed(-Constants.ARM_TRAVEL_DOWN);
     }
     m_arm.setSpeed(-Constants.ARM_HOLD_DOWN);
     armIsUp = false;
@@ -350,9 +350,9 @@ public class AutoCommand extends CommandBase {
     double timeAtWhichProcessStarts = Timer.getFPGATimestamp();
     // If the timer since when the process starts is less than desired time (from everybot code) lower arm. ArmIsUp should be true too.
     while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_DOWN && armIsUp == false) {
-      m_arm.setSpeed(Constants.ARM_TRAVEL);
+      m_arm.setSpeed(Constants.ARM_TRAVEL_UP);
     }
-    m_arm.setSpeed(Constants.ARM_HOLD_DOWN);
+    m_arm.setSpeed(Constants.ARM_HOLD_UP);
     armIsUp = true;
   }
 

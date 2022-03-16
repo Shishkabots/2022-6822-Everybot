@@ -19,7 +19,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    m_armMotor = new Motor(5, MotorType.kBrushless);
+    m_armMotor = new Motor(6, MotorType.kBrushless);
     m_armMotor.setInverted(false);
     m_armMotor.setIdleMode(true);
     m_armMotor.burnFlash();
@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
   public void commonPeriodic() {
     if(m_armUp){
         if(Timer.getFPGATimestamp() - m_lastBurstTime < Constants.ARM_TIME_UP){
-          m_armMotor.setSpeed(Constants.ARM_TRAVEL);
+          m_armMotor.setSpeed(Constants.ARM_TRAVEL_UP);
         }
         else{
             m_armMotor.setSpeed(Constants.ARM_HOLD_UP);
@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
       }
       else{
         if(Timer.getFPGATimestamp() - m_lastBurstTime < Constants.ARM_TIME_DOWN){
-            m_armMotor.setSpeed(-1 * Constants.ARM_TRAVEL);
+            m_armMotor.setSpeed(-1 * Constants.ARM_TRAVEL_DOWN);
         }
         else{
             m_armMotor.setSpeed(-1 * Constants.ARM_HOLD_UP);

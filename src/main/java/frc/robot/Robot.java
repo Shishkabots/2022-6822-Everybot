@@ -121,12 +121,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     try {
-       m_driveMode = m_driveModeChooser.getSelected();
-       m_robotContainer.setDriveType(m_driveMode);
+       //m_driveMode = m_driveModeChooser.getSelected();
+       //m_robotContainer.setDriveType("Arcade Drive");
 
-      //m_driveTrain.teleopPeriodic(-driverController.getRawAxis(1), -driverController.getRawAxis(2));
+      //m_driveTrain.teleopPeriodic(-m_driverStick.getRawAxis(1), -m_driverStick.getRawAxis(2));
       //Intake controls
-      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER)){
+      if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
         m_intake.setSpeed(1);
       }
       else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
