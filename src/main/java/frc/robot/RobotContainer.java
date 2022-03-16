@@ -48,6 +48,7 @@ public class RobotContainer {
   private final Arm m_arm;
   private final UltrasonicSensor m_ultrasonicSensor;
   private BeamBreakSensor m_beamBreakSensor;
+  private ShishkabotsEncoder m_encoder;
   private static RobotLogger logger;
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
@@ -67,9 +68,10 @@ public class RobotContainer {
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
     m_beamBreakSensor = new BeamBreakSensor();
+    m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
     // assign default commands
     m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
-    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor, m_encoder);
 
     // Configure the button bindings
     configureButtonBindings();

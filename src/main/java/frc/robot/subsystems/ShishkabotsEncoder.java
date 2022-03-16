@@ -37,6 +37,4 @@ public class ShishkabotsEncoder {
     public double getDistance() {
         return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2;
     }
-
-
 }

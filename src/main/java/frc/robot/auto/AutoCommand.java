@@ -4,6 +4,8 @@
 
 package frc.robot.auto;
 
+import java.time.Instant;
+
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.logging.RobotLogger;
@@ -26,15 +28,20 @@ public class AutoCommand extends CommandBase {
     private Arm m_arm;
     private UltrasonicSensor m_ultrasonicSensor;
     private BeamBreakSensor m_beamBreakSensor;
+    private ShishkabotsEncoder m_encoder;
 
     private double kP = 0.3, kI = 0.3, kD = 1;
     private double derivative, previous_error, error;
     private double current_yaw, target_yaw;
     private int setpoint = Constants.CAMERA_WIDTH_IN_PIXELS_OVER_TWO;
     private double rcw;
-    private double imu_error, imu_rcw, imu_derivative, imu_previous_error;
+    private double imu_error, imu_rcw, imu_derivative, imu_previous_error, target_angle;
     // Arm is up when match starts
     private boolean armIsUp;
+    private int hubTurnCount = 1;
+    private boolean alreadyStoppedMoving = false;
+    private double lastPosition, distanceToBall;
+  
 
     private AutonomousState m_autonomousState;
     private static SendableChooser<String> autonomousModeChooser;
@@ -51,7 +58,7 @@ public class AutoCommand extends CommandBase {
    *
    * @param  drivetrain The drivetrain used by this command.
    */
-  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor, BeamBreakSensor beamBreakSensor) {
+  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor, BeamBreakSensor beamBreakSensor, ShishkabotsEncoder encoder) {
     m_pigeon = imu;
     m_driveTrain = driveTrain;
     m_ballTracker = ballTracker;
@@ -59,6 +66,7 @@ public class AutoCommand extends CommandBase {
     m_ultrasonicSensor = ultrasonicSensor;
     m_colorSensor = colorSensor;
     m_beamBreakSensor = beamBreakSensor;
+    m_encoder = encoder;
     // Arm up when match starts
     armIsUp = true;
 
@@ -136,10 +144,15 @@ public class AutoCommand extends CommandBase {
         if (mostConfidentBallCoordinates != null) {
           PIDBallTurningControl();
           turnToBall();
-          goStraight();
-          pickUpBall();
+          // If robot is done turning and ready to go forwards
+          if (turnToBall()) {
+            goStraight();
+            pickUpBall();
+          }
         }
         if (isBallHeldInIntake()) {
+          distanceToBall = m_encoder.getDistance();
+          SmartDashboard.putNumber("distance to ball", m_encoder.getDistance());
           // Based on the ball color, will either spit out the ball immediately (wrong color) or will go back to hub
           if (teamColorChooser.getSelected().equals(m_colorSensor.checkColor())) {
             m_autonomousState = AutonomousState.GO_TO_HUB;
@@ -156,11 +169,15 @@ public class AutoCommand extends CommandBase {
         if (isBallHeldInIntake()) {
           PIDHubTurningControl();
           turnToHub(); // TODO udpate this method to use machine learning
-          if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
+          if (robotIsAtHub() == false) {
             goStraight();
           }
           else {
-            stopMoving();
+            if (alreadyStoppedMoving == false) {
+              stopMoving();
+              alreadyStoppedMoving = true;
+            }
+            faceTowardsHub();
             scoreBall();
             // After this loop ends, once the ball is no longer detected inside the intake the else statement to switch state will run.
           }
@@ -241,13 +258,18 @@ public class AutoCommand extends CommandBase {
 
   // +/- 10 degrees to allow for overshoot and undershot, will be redone with PID now.
   // Always call after chooseMostConfidentBall(), else mostConfidentBallCoordinates will be null
-  public void turnToBall() {
+  public boolean turnToBall() {
     try {
     if (mostConfidentBallCoordinates != null) {
       SmartDashboard.putNumber("rcw in autocommand", rcw);
       m_driveTrain.arcadedrive(0, rcw);
+      if (rcw == 0) {
+        m_encoder.reset();
+        return true;
+      }
     }
-      SmartDashboard.putNumber("Yaw: ", m_pigeon.getYaw());
+    SmartDashboard.putNumber("Yaw: ", m_pigeon.getYaw());
+    return false;
     } catch (Exception e) {
         logger.logError("Runtime Exception while trying to use PID with ball turning " + e);
         throw e;
@@ -256,17 +278,13 @@ public class AutoCommand extends CommandBase {
 
   public void PIDHubTurningControl() {
     try {
-
-      if (count == 1 && m_pigeon.getYaw() > 0) {
+      if (hubTurnCount == 1 && m_pigeon.getYaw() > 0) {
         target_angle = m_pigeon.getYaw() - 180;
       }
       else if (m_pigeon.getYaw() < 0) {
         target_angle = m_pigeon.getYaw() + 180;
       }
-
-      if (m_pigeon.getYaw() > 0) {
-        imu_error
-      }
+      imu_error = target_angle - m_pigeon.getYaw();
       //integral = (imu_error * .02); DG add back if derivative doesn't work
       imu_derivative = (imu_error - imu_previous_error) / 0.02;
 
@@ -287,21 +305,69 @@ public class AutoCommand extends CommandBase {
         imu_rcw = Math.sqrt(imu_rcw) / 10.0;
       }
       imu_previous_error = imu_error;
-      SmartDashboard.putString("values", imu_rcw + " is rcw. " + "error is " + kP + ". integral is " + kI);
+      SmartDashboard.putString("values", imu_rcw + " is imu rcw. " + "error is " + kP + ". integral is " + kI);
     }
     catch (Exception e) {
-      SmartDashboard.putString("error", "runtime in pidturn");
+      SmartDashboard.putString("error", "runtime in pidhubturn");
     }
   }
 
-  public void turnToHub() {
+  public boolean turnToHub() {
     try {
       SmartDashboard.putNumber("imu rcw", imu_rcw);
       m_driveTrain.arcadedrive(0, imu_rcw);
-      if (m_pigeon.getYaw() > 0 - Constants.ERROR_LEEWAY || m_pigeon.getYaw() < 0 + Constants.ERROR_LEEWAY) {
+
+      if (imu_rcw == 0) {
+        m_encoder.reset();
+        return true;
+      }
+      else {
+        return false;
       }
     } catch (Exception e) {
       logger.logError("Runtime Exception while trying to use PID with turning to hub " + e);
+      throw e;
+    }
+  }
+
+  public boolean robotIsAtHub() {
+    if (m_encoder.getDistance() - lastPosition >= distanceToBall - 1 || m_encoder.getDistance() - lastPosition <= distanceToBall + 1) { //dg check this idk the units
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public void faceTowardsHub() {
+    try {
+      // Invert the yaw so that the robot moves the right way (if the robot is pointed left the error is positive so the robot will turn right)
+      imu_error = m_pigeon.getYaw();
+
+      //integral = (imu_error * .02); DG add back if derivative doesn't work
+      imu_derivative = (imu_error - imu_previous_error) / 0.02;
+
+      // If the current error is within the error leeway, the robot will stop turning.
+      if (Math.abs(imu_error) < Constants.ERROR_LEEWAY) {
+        imu_rcw = 0;
+      }
+      else {
+        imu_rcw = (kP * imu_error + kD * imu_derivative);
+      }
+
+      //Sensitivity adjustment, since the rcw value originally is in hundreds (it is the pixel error + integral).
+      // 10.0 is an arbitrary number for testing, no real meaning behind it.
+      if (imu_rcw < 0) {
+        imu_rcw = -1 * Math.sqrt(Math.abs(imu_rcw)) / 10.0;
+      }
+
+      else {
+        imu_rcw = Math.sqrt(imu_rcw) / 10.0;
+      }
+      imu_previous_error = imu_error;
+      SmartDashboard.putString("values", imu_rcw + " is rcw. " + "error is " + kP + ". integral is " + kI);
+    } catch (Exception e) {
+      logger.logError("Runtime Exception while trying to use PID with facing to hub " + e);
       throw e;
     }
   }
