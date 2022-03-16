@@ -181,4 +181,8 @@ public class RobotContainer {
   public Arm getArm() {
     return m_arm;
   }
+  
+  public Imu getImu() {
+    return m_imu;
+  }
  } 

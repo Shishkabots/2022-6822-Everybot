@@ -24,6 +24,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ShishkabotsEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Imu;
 
 
 public class Robot extends TimedRobot {
@@ -41,6 +42,7 @@ public class Robot extends TimedRobot {
   private final RobotLogger logger = RobotContainer.getLogger();
 
   private ShishkabotsEncoder m_encoder;
+  private Imu m_pigeon;
 
   private double autoStart = 0;
   private boolean goForAuto = false;
@@ -76,6 +78,8 @@ public class Robot extends TimedRobot {
 
       //Initializes the encoders. 
       m_encoder = new ShishkabotsEncoder(Constants.DISTANCE_PER_PULSE_Rev_11_1271);
+
+      m_pigeon = m_robotContainer.getImu();
     }  catch (Exception e) {
       logger.logError("Runtime Exception in robotInit" + e);
       throw e;

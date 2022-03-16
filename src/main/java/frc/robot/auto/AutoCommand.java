@@ -29,6 +29,7 @@ public class AutoCommand extends CommandBase {
 
     private double kP = 0.3, kI = 0.3, kD = 1;
     private double derivative, previous_error, error;
+    private double current_yaw, target_yaw;
     private int setpoint = Constants.CAMERA_WIDTH_IN_PIXELS_OVER_TWO;
     private double rcw;
     private double imu_error, imu_rcw, imu_derivative, imu_previous_error;
@@ -148,6 +149,8 @@ public class AutoCommand extends CommandBase {
           }
         }
         break;
+
+      // Using trig, we can turn back to the line perpendicular to hub and then go straight back.
       case GO_TO_HUB:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
         if (isBallHeldInIntake()) {
@@ -253,8 +256,22 @@ public class AutoCommand extends CommandBase {
 
   public void PIDHubTurningControl() {
     try {
-      // Invert the yaw so that the robot moves the right way (if the robot is pointed left the error is positive so the robot will turn right)
-      imu_error = -1 * m_pigeon.getYaw();
+      if (m_pigeon.getYaw() > 0) {
+        if (m_pigeon.getYaw() > 180) {
+          imu_error = m_pigeon.getYaw() % 180;
+        }
+        else {
+          imu_error = 180 - m_pigeon.getYaw();
+        }
+      else if (m_pigeon.getYaw() < 0) {
+        if (m_pigeon.getYaw() < -180) {
+          imu_error = m_pigeon.getYaw() % -180;
+        }
+        else {
+          imu_error = m_pigeon.getYaw() + 180;
+        }
+      }
+        imu_error = m_pigeon.getYaw() % 180;
 
       //integral = (imu_error * .02); DG add back if derivative doesn't work
       imu_derivative = (imu_error - imu_previous_error) / 0.02;
