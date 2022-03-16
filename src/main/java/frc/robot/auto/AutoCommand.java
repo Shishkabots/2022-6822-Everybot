@@ -32,7 +32,6 @@ public class AutoCommand extends CommandBase {
 
     private double kP = 0.3, kI = 0.3, kD = 1;
     private double derivative, previous_error, error;
-    private double current_yaw, target_yaw;
     private int setpoint = Constants.CAMERA_WIDTH_IN_PIXELS_OVER_TWO;
     private double rcw;
     private double imu_error, imu_rcw, imu_derivative, imu_previous_error, target_angle;
@@ -165,6 +164,7 @@ public class AutoCommand extends CommandBase {
 
       // Using trig, we can turn back to the line perpendicular to hub and then go straight back.
       case GO_TO_HUB:
+        lastPosition = m_encoder.getDistance();
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
         if (isBallHeldInIntake()) {
           PIDHubTurningControl();
