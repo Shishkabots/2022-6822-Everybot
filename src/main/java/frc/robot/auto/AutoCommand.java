@@ -60,6 +60,8 @@ public class AutoCommand extends CommandBase {
     m_beamBreakSensor = beamBreakSensor;
     // Arm up when match starts
     armIsUp = true;
+    autonomousModeChooser.setDefaultOption("Auto Mode", Constants.VISION_SCORE_FIRST_STRING);
+    teamColorChooser.setDefaultOption("Team Color", "blue");
 
     if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_FIRST_STRING)) {
       m_autonomousState = AutonomousState.SCORE_BALL;
@@ -73,7 +75,6 @@ public class AutoCommand extends CommandBase {
     else {
       // Default autonomous mode
       m_autonomousState = AutonomousState.SCORE_BALL;
-
     }
 
     addRequirements(m_pigeon, m_driveTrain);
@@ -130,6 +131,7 @@ public class AutoCommand extends CommandBase {
       case GO_TO_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
         // TODO - make sure arm is down before looking for ball, check for distance between arm to hub to make sure its not too close
+        
         chooseMostConfidentBall();
         // DG - maybe remove this below line? Might induce unnecessary stopping of robot when the PID would just have it turn back to find the ball or when ball falls out of frmae when too near
         if (mostConfidentBallCoordinates != null) {
@@ -334,19 +336,23 @@ public class AutoCommand extends CommandBase {
     double timeAtWhichProcessStarts = Timer.getFPGATimestamp();
     // If the timer since when the process starts is less than desired time (from everybot code) lower arm. ArmIsUp should be true too.
     while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_UP && armIsUp == true) {
-      m_arm.setSpeed(-Constants.ARM_TRAVEL);
+      m_arm.setSpeed(-Constants.ARM_TRAVEL_DOWN);
     }
     m_arm.setSpeed(-Constants.ARM_HOLD_DOWN);
     armIsUp = false;
+
+    if (isBallHeldInIntake()== false) {
+      m_intake.intakeBall();
+    }
   }
 
   public void putArmUp() {
     double timeAtWhichProcessStarts = Timer.getFPGATimestamp();
     // If the timer since when the process starts is less than desired time (from everybot code) lower arm. ArmIsUp should be true too.
     while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_DOWN && armIsUp == false) {
-      m_arm.setSpeed(Constants.ARM_TRAVEL);
+      m_arm.setSpeed(Constants.ARM_TRAVEL_UP);
     }
-    m_arm.setSpeed(Constants.ARM_HOLD_DOWN);
+    m_arm.setSpeed(Constants.ARM_HOLD_UP);
     armIsUp = true;
   }
 
