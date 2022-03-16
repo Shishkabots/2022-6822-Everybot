@@ -256,28 +256,22 @@ public class AutoCommand extends CommandBase {
 
   public void PIDHubTurningControl() {
     try {
-      if (m_pigeon.getYaw() > 0) {
-        if (m_pigeon.getYaw() > 180) {
-          imu_error = m_pigeon.getYaw() % 180;
-        }
-        else {
-          imu_error = 180 - m_pigeon.getYaw();
-        }
-      else if (m_pigeon.getYaw() < 0) {
-        if (m_pigeon.getYaw() < -180) {
-          imu_error = m_pigeon.getYaw() % -180;
-        }
-        else {
-          imu_error = m_pigeon.getYaw() + 180;
-        }
-      }
-        imu_error = m_pigeon.getYaw() % 180;
 
+      if (count == 1 && m_pigeon.getYaw() > 0) {
+        target_angle = m_pigeon.getYaw() - 180;
+      }
+      else if (m_pigeon.getYaw() < 0) {
+        target_angle = m_pigeon.getYaw() + 180;
+      }
+
+      if (m_pigeon.getYaw() > 0) {
+        imu_error
+      }
       //integral = (imu_error * .02); DG add back if derivative doesn't work
       imu_derivative = (imu_error - imu_previous_error) / 0.02;
 
       // If the current error is within the error leeway, the robot will stop turning.
-      if (Math.abs(imu_error) < Constants.ERROR_LEEWAY) {
+      if (Math.abs(imu_error) < target_angle + Constants.ERROR_LEEWAY && Math.abs(imu_error) > target_angle - Constants.ERROR_LEEWAY) {
         imu_rcw = 0;
       }
       else {
@@ -286,10 +280,9 @@ public class AutoCommand extends CommandBase {
 
       //Sensitivity adjustment, since the rcw value originally is in hundreds (it is the pixel error + integral).
       // 10.0 is an arbitrary number for testing, no real meaning behind it.
-      if (imu_rcw < 0) {
+      if (imu_rcw > target_angle) {
         imu_rcw = -1 * Math.sqrt(Math.abs(imu_rcw)) / 10.0;
       }
-
       else {
         imu_rcw = Math.sqrt(imu_rcw) / 10.0;
       }
