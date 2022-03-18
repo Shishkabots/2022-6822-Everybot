@@ -34,13 +34,17 @@ public class AutoCommand extends CommandBase {
     private double imu_error, imu_rcw, imu_derivative, imu_previous_error;
     // Arm is up when match starts
     private boolean armIsUp;
+    private boolean burstMode;
+    private double lastBurstTime;
+    private double autoStart;
+    private boolean goForAuto;
 
     private AutonomousState m_autonomousState;
     private static SendableChooser<String> autonomousModeChooser;
     private static SendableChooser<String> teamColorChooser;
 
     private enum AutonomousState {
-      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE
+      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE, EVERYBOT_AUTO
     }
 
   private final RobotLogger logger = RobotContainer.getLogger();
@@ -50,7 +54,7 @@ public class AutoCommand extends CommandBase {
    *
    * @param  drivetrain The drivetrain used by this command.
    */
-  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor, BeamBreakSensor beamBreakSensor) {
+  public AutoCommand(Imu imu, DriveTrain driveTrain, BallTracker ballTracker, Arm arm, UltrasonicSensor ultrasonicSensor, ColorSensor colorSensor, BeamBreakSensor beamBreakSensor, Intake intake) {
     m_pigeon = imu;
     m_driveTrain = driveTrain;
     m_ballTracker = ballTracker;
@@ -58,11 +62,17 @@ public class AutoCommand extends CommandBase {
     m_ultrasonicSensor = ultrasonicSensor;
     m_colorSensor = colorSensor;
     m_beamBreakSensor = beamBreakSensor;
+    m_intake = intake;
     // Arm up when match starts
     armIsUp = true;
-    autonomousModeChooser.setDefaultOption("Auto Mode", Constants.VISION_SCORE_FIRST_STRING);
-    teamColorChooser.setDefaultOption("Team Color", "blue");
+    burstMode = false;
+    lastBurstTime = 0;
+    autoStart = 0;
+    goForAuto = false;
 
+    //autonomousModeChooser.setDefaultOption("Auto Mode", Constants.VISION_SCORE_FIRST_STRING);
+    teamColorChooser.setDefaultOption("Team Color", "blue");
+    /*
     if (autonomousModeChooser.getSelected().equals(Constants.VISION_SCORE_FIRST_STRING)) {
       m_autonomousState = AutonomousState.SCORE_BALL;
     }
@@ -75,8 +85,8 @@ public class AutoCommand extends CommandBase {
     else {
       // Default autonomous mode
       m_autonomousState = AutonomousState.SCORE_BALL;
-    }
-
+    }*/
+    m_autonomousState = AutonomousState.EVERYBOT_AUTO;
     addRequirements(m_pigeon, m_driveTrain);
   }
 
@@ -84,6 +94,11 @@ public class AutoCommand extends CommandBase {
   @Override
   public void initialize() {
     logger.logInfo("Autonomous Command initialized!");
+    //get a time for auton start to do events based on time later
+    autoStart = Timer.getFPGATimestamp();
+    //check dashboard icon to ensure good to do auto
+    goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
+    
     m_pigeon.enterCalibrationMode(CalibrationMode.Magnetometer360); //check if right calibration DG
    }
 
@@ -116,11 +131,11 @@ public class AutoCommand extends CommandBase {
       case SCORE_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_PRELOADED_BALL");
         if (armIsUp == false) {
-          putArmUp();
+          //putArmUp();
         }
         if (armIsUp) {
           if (isBallHeldInIntake()) {
-            scoreBall();
+            //scoreBall();
           }
           else {
             // Once the ball is dropped, set state to go to ball.
@@ -131,14 +146,15 @@ public class AutoCommand extends CommandBase {
       case GO_TO_BALL:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "GO_TO_BALL");
         // TODO - make sure arm is down before looking for ball, check for distance between arm to hub to make sure its not too close
-        
+        logger.logInfo("entered go_to_ball");
         chooseMostConfidentBall();
         // DG - maybe remove this below line? Might induce unnecessary stopping of robot when the PID would just have it turn back to find the ball or when ball falls out of frmae when too near
         if (mostConfidentBallCoordinates != null) {
           PIDBallTurningControl();
+          logger.logInfo("pid ball turning passed");
           turnToBall();
           goStraight();
-          pickUpBall();
+          //pickUpBall();
         }
         if (isBallHeldInIntake()) {
           // Based on the ball color, will either spit out the ball immediately (wrong color) or will go back to hub
@@ -154,13 +170,13 @@ public class AutoCommand extends CommandBase {
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
         if (isBallHeldInIntake()) {
           PIDHubTurningControl();
-          turnToHub(); // TODO udpate this method to use machine learning
+          //turnToHub(); 
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
             goStraight();
           }
           else {
             stopMoving();
-            scoreBall();
+            //scoreBall();
             // After this loop ends, once the ball is no longer detected inside the intake the else statement to switch state will run.
           }
         }
@@ -173,12 +189,48 @@ public class AutoCommand extends CommandBase {
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "PRIMITIVE_AUTO");
 
         if (isBallHeldInIntake()) {
-          scoreBall();
+          //scoreBall();
         }
         else {
             // Moves robot out of the way of the other team (backwards slowly for 3 seconds)
             goBackwardsSlowlyForThreeSeconds();
             m_autonomousState = AutonomousState.IDLE;
+        }
+        break;
+      case EVERYBOT_AUTO:
+         //arm control code. same as in teleop
+        if(!armIsUp){
+          if(Timer.getFPGATimestamp() - lastBurstTime < Constants.ARM_TIME_UP){
+            m_arm.setSpeed(Constants.ARM_TRAVEL_UP);
+          }
+          else{
+            m_arm.setSpeed(Constants.ARM_HOLD_UP);
+          }
+        }
+        else{
+          if(Timer.getFPGATimestamp() - lastBurstTime < Constants.ARM_TIME_DOWN){
+            m_arm.setSpeed(-1 * Constants.ARM_TRAVEL_DOWN);
+          }
+          else{
+            m_arm.setSpeed(-Constants.ARM_HOLD_UP);
+          }
+        }    
+      //get time since start of auto
+        double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
+        if(goForAuto){
+          //series of timed events making up the flow of auto
+          if(autoTimeElapsed < 3){
+            //spit out the ball for three seconds
+            m_intake.setSpeed(-1);
+          }else if(autoTimeElapsed < 6){
+            //stop spitting out the ball and drive backwards *slowly* for three seconds
+            m_intake.setSpeed(0);
+            m_driveTrain.arcadedrive(-0.3, 0);
+          }else{
+            //do nothing for the rest of auto
+            m_intake.setSpeed(0);
+            m_driveTrain.arcadedrive(0, 0);
+          }
         }
         break;
       case IDLE:
@@ -208,8 +260,10 @@ public class AutoCommand extends CommandBase {
    */
   public void PIDBallTurningControl(){
     try {
+      logger.logInfo("pid ball turning entered");
       error = setpoint - ((mostConfidentBallCoordinates.getXMin() + mostConfidentBallCoordinates.getXMax()) / 2); // Error = Target - Actual
-
+      SmartDashboard.putNumber("setpoint", setpoint);
+      SmartDashboard.putNumber("error", error);
       // integral = (error * .02); DG add back if derivative doesn't work
 
       derivative = (error - previous_error) / 0.02;
@@ -221,7 +275,7 @@ public class AutoCommand extends CommandBase {
       else {
         rcw = (kP * error + kD * derivative);
       }
-
+      logger.logInfo("" + rcw);
       //Sensitivity adjustment, since the rcw value originally is in hundreds (it is the pixel error + integral).
       // 10.0 is an arbitrary number for testing, no real meaning behind it.
       if (rcw < 0) {
@@ -349,10 +403,11 @@ public class AutoCommand extends CommandBase {
   public void putArmUp() {
     double timeAtWhichProcessStarts = Timer.getFPGATimestamp();
     // If the timer since when the process starts is less than desired time (from everybot code) lower arm. ArmIsUp should be true too.
-    while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_DOWN && armIsUp == false) {
+    while(Timer.getFPGATimestamp() < timeAtWhichProcessStarts + Constants.ARM_TIME_UP && armIsUp == false) {
       m_arm.setSpeed(Constants.ARM_TRAVEL_UP);
     }
     m_arm.setSpeed(Constants.ARM_HOLD_UP);
+    logger.logInfo("Arm is now up.");
     armIsUp = true;
   }
 

@@ -54,6 +54,7 @@ public class RobotContainer {
   private final UltrasonicSensor m_ultrasonicSensor;
   private BeamBreakSensor m_beamBreakSensor;
   private static RobotLogger logger;
+  private USBCamera m_camera;
   private boolean joystickturningbool = true;
   
   // True makes it turn-in-place, false makes it do constant-curvature motion.
@@ -73,7 +74,10 @@ public class RobotContainer {
     m_intake = new Intake(Constants.INTAKE_LEAD_MOTOR);
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
+    m_camera = new USBCamera();
     m_beamBreakSensor = new BeamBreakSensor();
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor, m_intake);
+
     // assign default commands
     if (joystickturningbool) {
       m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
@@ -82,8 +86,6 @@ public class RobotContainer {
       m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     }    
     
-    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -210,5 +212,9 @@ public class RobotContainer {
 
   public Intake getIntake() {
     return m_intake;
+  }
+
+  public USBCamera getCamera() {
+    return m_camera;
   }
  } 
