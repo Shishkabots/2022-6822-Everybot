@@ -79,7 +79,6 @@ public class Robot extends TimedRobot {
       m_intake = m_robotContainer.getIntake(); //change? DG
       logger.logInfo("robot init autocommand is running");
       m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-      logger.logInfo(m_camera.getPath());
 
       // Add a thing on the dashboard to turn off auto if needed
       SmartDashboard.putBoolean("Go For Auto", false);

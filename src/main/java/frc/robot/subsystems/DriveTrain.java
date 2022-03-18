@@ -37,7 +37,7 @@ public class DriveTrain extends SubsystemBase {
    * test
    */
   public void arcadedrive(double xSpeed, double zRotation){
-    SmartDashboard.putNumber("rcw = ", zRotation);
+    SmartDashboard.putNumber("rcw = ", xSpeed);
     m_robotDrive.arcadeDrive(xSpeed, zRotation);
   }
   public void tankdrive(double leftSpeed, double rightSpeed) {
@@ -137,5 +137,10 @@ public class DriveTrain extends SubsystemBase {
         m_rightFrontMotor.set(-0.15);
         //m_rightBackMotor.set(-0.15);
     }
+  }
+
+  public void setEachMotorIndividually(double speed) {
+    m_leftSide.set(speed);
+    m_rightSide.set(speed);
   }
 }
