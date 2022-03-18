@@ -113,7 +113,7 @@ public final class Constants {
     public final static double ARM_HOLD_DOWN = 0.13;
     public final static double ARM_TRAVEL_UP = 0.4;
     public final static double ARM_TRAVEL_DOWN = 0;
-    public final static double ARM_TIME_UP = 1.25;
+    public final static double ARM_TIME_UP = 1.1;//1.25;
     public final static double ARM_TIME_DOWN = 0.7;
     public final static boolean BURST_MODE = false;
     /**
