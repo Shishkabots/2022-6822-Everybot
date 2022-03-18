@@ -57,8 +57,8 @@ public final class Constants {
     public final static int JOYSTICK_BUTTON_RIGHTSTICK = 12;      
 
     // Speed sensitivity
-    public final static double JOYSTICK_FULLSPEED = 0.7;
-    public final static double JOYSTICK_THROTTLESPEED = 0.7;
+    public final static double JOYSTICK_FULLSPEED = 1;
+    public final static double JOYSTICK_THROTTLESPEED = 1;
 
     // Retention time in hours for logs on the RoboRIO target
     public final static double LOG_EXPIRATION_IN_HRS = 48;

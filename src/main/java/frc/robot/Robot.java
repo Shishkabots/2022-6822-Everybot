@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
   Joystick m_driverStick;
-  XboxController m_intakeStick;
 
   private final RobotLogger logger = RobotContainer.getLogger();
 
@@ -71,7 +70,6 @@ public class Robot extends TimedRobot {
     
       m_robotContainer = new RobotContainer();
       m_driverStick = m_robotContainer.getDriverStick();
-      m_intakeStick = m_robotContainer.getIntakeStick();
       m_camera = m_robotContainer.getCamera();
 
       m_driveTrain = m_robotContainer.getDriveTrain();
@@ -152,10 +150,10 @@ public class Robot extends TimedRobot {
        m_robotContainer.setDriveType("Arcade Drive");
 
       //Intake controls
-      if(m_intakeStick.getLeftBumper()){
+      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER)){
         m_intake.setSpeed(1);
       }
-      else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
         m_intake.setSpeed(-1);
       }
       else{
@@ -165,11 +163,11 @@ public class Robot extends TimedRobot {
       // Will be uncommented when arm is ready.
       m_arm.commonPeriodic();
   
-      if(m_intakeStick.getRightBumperPressed() && !m_arm.getArmUpStatus()){
+      if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTBUMPER) && !m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(true);
       }
-      else if(m_intakeStick.getRightTriggerAxis() > 0.0 && m_arm.getArmUpStatus()){
+      else if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTTRIGGER) && m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(false);
       } 
