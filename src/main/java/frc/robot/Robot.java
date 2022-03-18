@@ -26,7 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
   private DriveTrain m_driveTrain;
   private Arm m_arm;
   private Intake m_intake;
+  private Command m_autonomousCommand;
 
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
@@ -67,6 +69,8 @@ public class Robot extends TimedRobot {
       m_driveTrain = m_robotContainer.getDriveTrain();
       m_arm = m_robotContainer.getArm();
       m_intake = m_robotContainer.getIntake(); //change? DG
+      logger.logInfo("robot init autocommand is running");
+      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
       // Add a thing on the dashboard to turn off auto if needed
       SmartDashboard.putBoolean("Go For Auto", false);
@@ -107,7 +111,22 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    try {
+      logger.logInfo("entered auto init");
+      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+      // schedule the autonomous command (example)
+      logger.logInfo("before scheduling command");
+      if (m_autonomousCommand != null) {
+        logger.logInfo("scheduling autocommand");
+        m_autonomousCommand.schedule();
+      }
+    } catch (Exception e) {
+      logger.logError("Runtime Exception in autonomousInit" + e);
+      throw e;
+    }
+  }
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -128,7 +147,7 @@ public class Robot extends TimedRobot {
       if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
         m_intake.setSpeed(1);
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B){
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B)){
         m_intake.setSpeed(-1);
       }
       else{

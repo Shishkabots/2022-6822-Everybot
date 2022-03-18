@@ -72,6 +72,8 @@ public class RobotContainer {
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
     m_beamBreakSensor = new BeamBreakSensor();
+    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor, m_intake);
+
     // assign default commands
     if (joystickturningbool) {
       m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
@@ -80,8 +82,6 @@ public class RobotContainer {
       m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     }    
     
-    m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor);
-
     // Configure the button bindings
     configureButtonBindings();
   }
