@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     try {
       // Log that robot has been initialized
       logger.logInfo("Robot initialized."); 
+      SmartDashboard.putBoolean("Go For Auto", false);
     
       m_robotContainer = new RobotContainer();
       m_driverStick = m_robotContainer.getDriverStick();

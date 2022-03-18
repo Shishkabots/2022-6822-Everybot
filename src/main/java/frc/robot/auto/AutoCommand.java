@@ -34,13 +34,17 @@ public class AutoCommand extends CommandBase {
     private double imu_error, imu_rcw, imu_derivative, imu_previous_error;
     // Arm is up when match starts
     private boolean armIsUp;
+    private boolean burstMode;
+    private double lastBurstTime;
+    private double autoStart;
+    private boolean goForAuto;
 
     private AutonomousState m_autonomousState;
     private static SendableChooser<String> autonomousModeChooser;
     private static SendableChooser<String> teamColorChooser;
 
     private enum AutonomousState {
-      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE
+      SCORE_BALL, GO_TO_BALL, GO_TO_HUB, PRIMITIVE_AUTO, IDLE, EVERYBOT_AUTO
     }
 
   private final RobotLogger logger = RobotContainer.getLogger();
@@ -60,7 +64,12 @@ public class AutoCommand extends CommandBase {
     m_beamBreakSensor = beamBreakSensor;
     m_intake = intake;
     // Arm up when match starts
-    armIsUp = false;
+    armIsUp = true;
+    burstMode = false;
+    lastBurstTime = 0;
+    autoStart = 0;
+    goForAuto = false;
+
     //autonomousModeChooser.setDefaultOption("Auto Mode", Constants.VISION_SCORE_FIRST_STRING);
     teamColorChooser.setDefaultOption("Team Color", "blue");
     /*
@@ -77,7 +86,7 @@ public class AutoCommand extends CommandBase {
       // Default autonomous mode
       m_autonomousState = AutonomousState.SCORE_BALL;
     }*/
-    m_autonomousState = AutonomousState.GO_TO_BALL;
+    m_autonomousState = AutonomousState.EVERYBOT_AUTO;
     addRequirements(m_pigeon, m_driveTrain);
   }
 
@@ -85,6 +94,11 @@ public class AutoCommand extends CommandBase {
   @Override
   public void initialize() {
     logger.logInfo("Autonomous Command initialized!");
+    //get a time for auton start to do events based on time later
+    autoStart = Timer.getFPGATimestamp();
+    //check dashboard icon to ensure good to do auto
+    goForAuto = SmartDashboard.getBoolean("Go For Auto", false);
+    
     m_pigeon.enterCalibrationMode(CalibrationMode.Magnetometer360); //check if right calibration DG
    }
 
@@ -154,7 +168,7 @@ public class AutoCommand extends CommandBase {
         break;
       case GO_TO_HUB:
         SmartDashboard.putString(Constants.AUTOCOMMAND_KEY, "SCORE_BALL");
-        if (true){//isBallHeldInIntake()) {
+        if (isBallHeldInIntake()) {
           PIDHubTurningControl();
           //turnToHub(); 
           if (m_ultrasonicSensor.getRangeIN() > Constants.BALL_DROP_DISTANCE_INCHES) {
@@ -181,6 +195,42 @@ public class AutoCommand extends CommandBase {
             // Moves robot out of the way of the other team (backwards slowly for 3 seconds)
             goBackwardsSlowlyForThreeSeconds();
             m_autonomousState = AutonomousState.IDLE;
+        }
+        break;
+      case EVERYBOT_AUTO:
+         //arm control code. same as in teleop
+        if(!armIsUp){
+          if(Timer.getFPGATimestamp() - lastBurstTime < Constants.ARM_TIME_UP){
+            m_arm.setSpeed(Constants.ARM_TRAVEL_UP);
+          }
+          else{
+            m_arm.setSpeed(Constants.ARM_HOLD_UP);
+          }
+        }
+        else{
+          if(Timer.getFPGATimestamp() - lastBurstTime < Constants.ARM_TIME_DOWN){
+            m_arm.setSpeed(-1 * Constants.ARM_TRAVEL_DOWN);
+          }
+          else{
+            m_arm.setSpeed(-Constants.ARM_HOLD_UP);
+          }
+        }    
+      //get time since start of auto
+        double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
+        if(goForAuto){
+          //series of timed events making up the flow of auto
+          if(autoTimeElapsed < 3){
+            //spit out the ball for three seconds
+            m_intake.setSpeed(-1);
+          }else if(autoTimeElapsed < 6){
+            //stop spitting out the ball and drive backwards *slowly* for three seconds
+            m_intake.setSpeed(0);
+            m_driveTrain.arcadedrive(-0.3, 0);
+          }else{
+            //do nothing for the rest of auto
+            m_intake.setSpeed(0);
+            m_driveTrain.arcadedrive(0, 0);
+          }
         }
         break;
       case IDLE:
