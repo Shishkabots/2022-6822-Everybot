@@ -23,6 +23,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ShishkabotsEncoder;
+import frc.robot.subsystems.USBCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Intake;
@@ -55,6 +56,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_driveModeChooser = new SendableChooser<>();
   
   private BeamBreakSensor m_beamBreakSensor;
+  private USBCamera m_camera;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -70,12 +72,14 @@ public class Robot extends TimedRobot {
       m_robotContainer = new RobotContainer();
       m_driverStick = m_robotContainer.getDriverStick();
       m_intakeStick = m_robotContainer.getIntakeStick();
+      m_camera = m_robotContainer.getCamera();
 
       m_driveTrain = m_robotContainer.getDriveTrain();
       m_arm = m_robotContainer.getArm();
       m_intake = m_robotContainer.getIntake(); //change? DG
       logger.logInfo("robot init autocommand is running");
       m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+      logger.logInfo(m_camera.getPath());
 
       // Add a thing on the dashboard to turn off auto if needed
       SmartDashboard.putBoolean("Go For Auto", false);
@@ -150,14 +154,9 @@ public class Robot extends TimedRobot {
 
       //Intake controls
       if(m_intakeStick.getLeftBumper()){
-        m_intake.setSpeed(1);;
-      }
-      else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
-
-      if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
         m_intake.setSpeed(1);
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B)){
+      else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
         m_intake.setSpeed(-1);
       }
       else{
@@ -167,11 +166,11 @@ public class Robot extends TimedRobot {
       // Will be uncommented when arm is ready.
       m_arm.commonPeriodic();
   
-      if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTBUMPER) && !m_arm.getArmUpStatus()){
+      if(m_intakeStick.getRightBumperPressed() && !m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(true);
       }
-      else if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTTRIGGER) && m_arm.getArmUpStatus()){
+      else if(m_intakeStick.getRightTriggerAxis() > 0.0 && m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(false);
       } 
