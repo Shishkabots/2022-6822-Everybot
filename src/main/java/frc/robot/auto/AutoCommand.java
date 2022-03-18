@@ -202,7 +202,6 @@ public class AutoCommand extends CommandBase {
 
       //get time since start of auto
         double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
-        logger.logInfo(autoTimeElapsed + "");
         if(true){
           //series of timed events making up the flow of auto
           if(autoTimeElapsed < 3){
@@ -212,12 +211,10 @@ public class AutoCommand extends CommandBase {
             //stop spitting out the ball and drive backwards *slowly* for three seconds
             m_intake.setSpeed(0);
             m_driveTrain.setEachMotorIndividually(-0.3);
-            logger.logInfo("time less than 6");
           }else{
             //do nothing for the rest of auto
             m_intake.setSpeed(0);
             m_driveTrain.setEachMotorIndividually(0);
-            logger.logInfo("time over 6");
           }
         }
         break;
