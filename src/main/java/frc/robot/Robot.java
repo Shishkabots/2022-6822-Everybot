@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
       m_robotContainer = new RobotContainer();
       m_driverStick = m_robotContainer.getDriverStick();
       m_intakeStick = m_robotContainer.getIntakeStick();
+
       m_driveTrain = m_robotContainer.getDriveTrain();
       m_arm = m_robotContainer.getArm();
       m_intake = m_robotContainer.getIntake(); //change? DG
@@ -152,6 +153,11 @@ public class Robot extends TimedRobot {
         m_intake.setSpeed(1);;
       }
       else if(m_intakeStick.getLeftTriggerAxis() > 0.0){
+
+      if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
+        m_intake.setSpeed(1);
+      }
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B)){
         m_intake.setSpeed(-1);
       }
       else{
