@@ -80,10 +80,10 @@ public class RobotContainer {
 
     // assign default commands
     if (joystickturningbool) {
-      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getRightX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     }
     else {
-      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+      m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getLeftX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
     }    
     
     // Configure the button bindings
