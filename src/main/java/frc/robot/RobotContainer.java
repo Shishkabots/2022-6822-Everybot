@@ -44,7 +44,7 @@ public class RobotContainer {
   private Command m_autoCommand;
   private Command m_teleopCommand;
   private final DriveTrain m_drivetrain;
-  private final Joystick m_driverStick;
+  private final XboxController m_driverStick;
   private final Imu m_imu;
   private final BallTracker m_ballTracker;
   private DriveType m_driveType;
@@ -65,7 +65,7 @@ public class RobotContainer {
     AutoCommand.initiateAutoCommandChooser();
     AutoCommand.initiateTeamColorChooser();
     m_drivetrain = new DriveTrain();
-    m_driverStick = new Joystick(Constants.DRIVER_STICK_PORT);
+    m_driverStick = new XboxController(Constants.DRIVER_STICK_PORT);
     m_imu = new Imu();
     m_ballTracker = new BallTracker();
     m_driveType = DriveType.ARCADE_DRIVE;
@@ -198,7 +198,7 @@ public class RobotContainer {
     checkDrivetype();
   }
 
-  public Joystick getDriverStick() {
+  public XboxController getDriverStick() {
     return m_driverStick;
   }
 

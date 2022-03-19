@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   
   //Definitions for the hardware. Change this if you change what stuff you have plugged in
 
-  Joystick m_driverStick;
+  XboxController m_driverStick;
 
   private final RobotLogger logger = RobotContainer.getLogger();
 
