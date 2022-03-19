@@ -150,11 +150,11 @@ public class Robot extends TimedRobot {
        m_robotContainer.setDriveType("Arcade Drive");
 
       //Intake controls
-      if(m_driverStick.getLeftBumper()) {
+      if(m_driverStick.getLeftBumper() || m_driverStick.getAButton()) {
         m_intake.setSpeed(1);
       }
      
-      else if(m_driverStick.getLeftTriggerAxis() > 0.0){
+      else if(m_driverStick.getLeftTriggerAxis() > 0.0 || m_driverStick.getBButton()){
         m_intake.setSpeed(-1);
       }
       else{
@@ -164,11 +164,11 @@ public class Robot extends TimedRobot {
       // Will be uncommented when arm is ready.
       m_arm.commonPeriodic();
   
-      if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTBUMPER) && !m_arm.getArmUpStatus()){
+      if(m_driverStick.getRightBumper() && !m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(true);
       }
-      else if(m_driverStick.getRawButtonPressed(Constants.JOYSTICK_RIGHTTRIGGER) && m_arm.getArmUpStatus()){
+      else if(m_driverStick.getRightTriggerAxis() > 0.0 && m_arm.getArmUpStatus()){
         m_arm.setLastBurstTime(Timer.getFPGATimestamp());
         m_arm.setArmUpStatus(false);
       } 

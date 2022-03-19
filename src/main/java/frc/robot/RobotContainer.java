@@ -99,7 +99,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Removes speed throttling during ArcadeDrive, allows robot to move at max speed.
     
-    new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTTRIGGER).whenHeld(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_FULLSPEED)); 
+    new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTTRIGGER).whenHeld(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> m_driverStick.getRightX(), m_drivetrain, Constants.JOYSTICK_FULLSPEED)); 
     //new JoystickButton(m_driverStick, Constants.JOYSTICK_BUTTON_Y).whenHeld(new IntakeBall()); remove? what even is this? DG
 
     new JoystickButton(m_driverStick, Constants.JOYSTICK_RIGHTBUMPER).whileHeld(
@@ -160,23 +160,23 @@ public class RobotContainer {
     switch(m_driveType) {
       case ARCADE_DRIVE:
       if (joystickturningbool) {
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getRightX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
       }
       else {
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getLeftX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
       }        break;
       case TANK_DRIVE:
-        m_drivetrain.setDefaultCommand(new TankDrive(() -> (m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y), m_drivetrain));
+        m_drivetrain.setDefaultCommand(new TankDrive(() -> (m_driverStick.getLeftY()), () -> m_driverStick.getRightY(), m_drivetrain));
         break;
       case CURVATURE_DRIVE:
-        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_Y)), () -> m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y), m_isQuickTurn, m_drivetrain));
+        m_drivetrain.setDefaultCommand(new CurvatureDrive(() -> (-m_driverStick.getRightY()), () -> m_driverStick.getLeftY(), m_isQuickTurn, m_drivetrain));
         break;
       default:
       if (joystickturningbool) {
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_RIGHT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getRightX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
       }
       else {
-        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_Y)), () -> -m_driverStick.getRawAxis(Constants.JOYSTICK_LEFT_X), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
+        m_drivetrain.setDefaultCommand(new ArcadeDrive(() -> (-m_driverStick.getLeftY()), () -> -m_driverStick.getLeftX(), m_drivetrain, Constants.JOYSTICK_THROTTLESPEED));
       }    }
   }
 
