@@ -198,16 +198,14 @@ public class AutoCommand extends CommandBase {
         }
         break;
       case EVERYBOT_AUTO:
-         //arm control code. same as in teleop
-
-      //get time since start of auto
+        //get time since start of auto
         double autoTimeElapsed = Timer.getFPGATimestamp() - autoStart;
         if(true){
           //series of timed events making up the flow of auto
           if(autoTimeElapsed < 3){
             //spit out the ball for three seconds
             m_intake.setSpeed(-1);
-          }else if(autoTimeElapsed < 6){
+          }else if(autoTimeElapsed < 7.5){
             //stop spitting out the ball and drive backwards *slowly* for three seconds
             m_intake.setSpeed(0);
             m_driveTrain.setEachMotorIndividually(-0.3);

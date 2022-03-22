@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends SubsystemBase {
 
-  //private final Motor m_leftFrontMotor;
+  private final Motor m_leftFrontMotor;
   private final Motor m_leftBackMotor;
 
   private final Motor m_rightFrontMotor;
-  //private final Motor m_rightBackMotor;
+  private final Motor m_rightBackMotor;
 
   private MotorControllerGroup m_leftSide;
   private final MotorControllerGroup m_rightSide;
@@ -52,36 +52,36 @@ public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
   public DriveTrain() {
     
-    //m_leftFrontMotor = new Motor(Constants.DRIVETRAIN_LEFT_FRONT_MOTOR, MotorType.kBrushed);
+    m_leftFrontMotor = new Motor(Constants.DRIVETRAIN_LEFT_FRONT_MOTOR, MotorType.kBrushed);
     m_leftBackMotor = new Motor(Constants.DRIVETRAIN_LEFT_BACK_MOTOR, MotorType.kBrushed);
     m_rightFrontMotor = new Motor(Constants.DRIVETRAIN_RIGHT_FRONT_MOTOR, MotorType.kBrushed);
-    //m_rightBackMotor = new Motor(Constants.DRIVETRAIN_RIGHT_BACK_MOTOR, MotorType.kBrushed);
+    m_rightBackMotor = new Motor(Constants.DRIVETRAIN_RIGHT_BACK_MOTOR, MotorType.kBrushed);
 
-    //m_leftFrontMotor.clearFaults();
+    m_leftFrontMotor.clearFaults();
     m_leftBackMotor.clearFaults();
     m_rightFrontMotor.clearFaults();
-    //m_rightBackMotor.clearFaults();
+    m_rightBackMotor.clearFaults();
 
     /*m_leftFrontMotor.configFactoryDefault();
     m_leftBackMotor.configFactoryDefault();
     m_rightBackMotor.configFactoryDefault();
     m_rightFrontMotor.configFactoryDefault();*/
 
-    //m_leftFrontMotor.setIdleMode(false);
+    m_leftFrontMotor.setIdleMode(false);
     m_leftBackMotor.setIdleMode(false);
     m_rightFrontMotor.setIdleMode(false);
-    //m_rightBackMotor.setIdleMode(false);
+    m_rightBackMotor.setIdleMode(false);
 
     /**
      * Inverts all motors based on value of the constant, which is currently true.
      * Currently the robot goes battery-first which is dangerous, so this will flip that direction.
      */
     m_rightFrontMotor.setInverted(Constants.IS_INVERTED);
-    //m_rightBackMotor.setInverted(Constants.IS_INVERTED);
+    m_rightBackMotor.setInverted(Constants.IS_INVERTED);
 
     
-    m_leftSide = new MotorControllerGroup(m_leftBackMotor.getSparkMAXMotor());
-    m_rightSide = new MotorControllerGroup(m_rightFrontMotor.getSparkMAXMotor());
+    m_leftSide = new MotorControllerGroup(m_leftFrontMotor.getSparkMAXMotor(), m_leftBackMotor.getSparkMAXMotor());
+    m_rightSide = new MotorControllerGroup(m_rightFrontMotor.getSparkMAXMotor(), m_rightBackMotor.getSparkMAXMotor());
 
     m_robotDrive = new DifferentialDrive(m_leftSide, m_rightSide); 
   }
@@ -107,17 +107,17 @@ public class DriveTrain extends SubsystemBase {
     double driveLeftPower = forward - turn;
     double driveRightPower = forward + turn;
 
-    //m_leftFrontMotor.setSpeed(driveLeftPower);
+    m_leftFrontMotor.setSpeed(driveLeftPower);
     m_leftBackMotor.setSpeed(driveLeftPower);
     m_rightFrontMotor.setSpeed(driveRightPower);
-    //m_rightBackMotor.setSpeed(driveRightPower);
+    m_rightBackMotor.setSpeed(driveRightPower);
   }
 
   public void disabledInit() {
-    //m_leftFrontMotor.setSpeed(0);
+    m_leftFrontMotor.setSpeed(0);
     m_leftBackMotor.setSpeed(0);
     m_rightFrontMotor.setSpeed(0);
-    //m_rightBackMotor.setSpeed(0);
+    m_rightBackMotor.setSpeed(0);
   }
 
 
@@ -128,14 +128,14 @@ public class DriveTrain extends SubsystemBase {
         m_rightSide.set(0);
     }*/
    if (direction == Constants.CLOCKWISE) {
-      //m_leftFrontMotor.set(-0.15);
+      m_leftFrontMotor.set(-0.15);
       m_rightFrontMotor.set(0.15);
-      //m_rightBackMotor.set(0.15);
+      m_rightBackMotor.set(0.15);
     }
     else if (direction == Constants.COUNTER_CLOCKWISE) {
-        //m_leftFrontMotor.set(0.15);
+        m_leftFrontMotor.set(0.15);
         m_rightFrontMotor.set(-0.15);
-        //m_rightBackMotor.set(-0.15);
+        m_rightBackMotor.set(-0.15);
     }
   }
 
