@@ -74,7 +74,7 @@ public class RobotContainer {
     m_arm = new Arm();
     m_ultrasonicSensor = new UltrasonicSensor(Constants.ULTRASONIC_ANALOG_PORT);
     //m_camera = new USBCamera();
-    CameraServer.startAutomaticCapture("Driver Camera", "/dev/video1");
+    CameraServer.startAutomaticCapture(0);
     m_beamBreakSensor = new BeamBreakSensor();
     m_autoCommand = new AutoCommand(m_imu, m_drivetrain, m_ballTracker, m_arm, m_ultrasonicSensor, m_colorSensor, m_beamBreakSensor, m_intake);
 

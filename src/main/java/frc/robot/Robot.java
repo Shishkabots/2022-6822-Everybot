@@ -150,10 +150,10 @@ public class Robot extends TimedRobot {
        m_robotContainer.setDriveType("Arcade Drive");
 
       //Intake controls
-      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER)){
+      if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER) || m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
         m_intake.setSpeed(1);
       }
-      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER)){
+      else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER) || m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B)){
         m_intake.setSpeed(-1);
       }
       else{
