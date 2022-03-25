@@ -151,10 +151,10 @@ public class Robot extends TimedRobot {
 
       //Intake controls
       if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTBUMPER) || m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_A)){
-        m_intake.setSpeed(1);
+        m_intake.setSpeed(Constants.INTAKE_INTAKE_SPEED);
       }
       else if(m_driverStick.getRawButton(Constants.JOYSTICK_LEFTTRIGGER) || m_driverStick.getRawButton(Constants.JOYSTICK_BUTTON_B)){
-        m_intake.setSpeed(-1);
+        m_intake.setSpeed(Constants.INTAKE_OUTTAKE_SPEED);
       }
       else{
         m_intake.setSpeed(0);

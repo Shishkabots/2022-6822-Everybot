@@ -57,8 +57,8 @@ public final class Constants {
     public final static int JOYSTICK_BUTTON_RIGHTSTICK = 12;      
 
     // Speed sensitivity
-    public final static double JOYSTICK_FULLSPEED = 1;
-    public final static double JOYSTICK_THROTTLESPEED = 1;
+    public final static double JOYSTICK_FULLSPEED = 0.8;
+    public final static double JOYSTICK_THROTTLESPEED = 0.8;
 
     // Retention time in hours for logs on the RoboRIO target
     public final static double LOG_EXPIRATION_IN_HRS = 48;
@@ -111,17 +111,17 @@ public final class Constants {
      * Arm initialized to up because that's how it would start a match
      */
     public final static double ARM_HOLD_UP = 0.08;
-    public final static double ARM_HOLD_DOWN = 0.13;
-    public final static double ARM_TRAVEL_UP = 0.4;
-    public final static double ARM_TRAVEL_DOWN = 0;
-    public final static double ARM_TIME_UP = 1.1;//1.25;
-    public final static double ARM_TIME_DOWN = 0.7;
+    public final static double ARM_HOLD_DOWN = 0.2;
+    public final static double ARM_TRAVEL_UP = 0.5;
+    public final static double ARM_TRAVEL_DOWN = 0.2;
+    public final static double ARM_TIME_UP = 0.75;
+    public final static double ARM_TIME_DOWN = 1;
     public final static boolean BURST_MODE = false;
     /**
      * Intake subsystem constants
      */
-    public final static double INTAKE_INTAKE_SPEED = 0.5;
-    public final static double INTAKE_OUTTAKE_SPEED = -0.5;
+    public final static double INTAKE_INTAKE_SPEED = 0.6;
+    public final static double INTAKE_OUTTAKE_SPEED = -1;
 
     /**
      * Encoder constants. 
